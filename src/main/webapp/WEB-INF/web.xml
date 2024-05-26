@@ -10,6 +10,9 @@
 			<web-resource-name>WebServerProject</web-resource-name>
 			<description></description>
 			<url-pattern>/adminMain.jsp</url-pattern>
+			<url-pattern>/adminPage/usersearch_admin.jsp</url-pattern>
+			<url-pattern>/adminPage/usermanage_admin.jsp</url-pattern>
+			<url-pattern>/adminPage/boardmanage_admin.jsp</url-pattern>
 		</web-resource-collection>
 		<auth-constraint>
 			<description>권한 관리자명</description>
