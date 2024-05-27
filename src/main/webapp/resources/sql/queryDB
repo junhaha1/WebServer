@@ -1,2 +1,0 @@
-Alter table member add LASTDATE DATETIME default NULL;
-Alter table member add ACTIVITY INT not null default 0;
