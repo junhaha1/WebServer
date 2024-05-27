@@ -14,9 +14,9 @@
 				<p class="col-md-8 fs-4">Admin Main Page</p>
 			</div>
 		</div>
-		<a href ="./adminPage/usersearch_admin.jsp" class = "btn btn-secondary" role="button">일반 사용자 조회</a>
-		<a href ="./adminPage/boardmanage_admin.jsp" class = "btn btn-secondary" role="button">게시판 목록</a>
+		<a href ="./adminPage/notice_admin.jsp" class = "btn btn-secondary" role="button">공지글 작성</a>
 		<a href ="./adminPage/usermanage_admin.jsp" class = "btn btn-secondary" role="button">일반 사용자 관리</a>
+		<a href ="./adminPage/boardmanage_admin.jsp" class = "btn btn-secondary" role="button">게시판 목록</a>
 		<%@ include file = "footer.jsp" %>
 	</div>
 </body>

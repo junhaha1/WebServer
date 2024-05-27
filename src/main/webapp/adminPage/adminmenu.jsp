@@ -14,12 +14,12 @@
 		</svg>   
         <span class="fs-4">Home</span>
       </a> 
-       <ul class="nav nav-pills">
-        <li class="nav-item"><a href ="logout.jsp" class = "btn btn-secondary" role="button">로그아웃</a></li>
-         <li class ="nav-item"><a href ="./adminPage/test.jsp" class = "btn btn-secondary" role="button">공지글 작성</a></li>
-        <li class ="nav-item"><a href ="./adminPage/usersearch_admin.jsp" class = "btn btn-secondary" role="button">일반 사용자 관리</a></li>
-        <li class ="nav-item"><a href ="./adminPage/boardmanage_admin.jsp" class = "btn btn-secondary" role="button">게시판 관리</a></li>
-        </ul> 
+      <div class = "bg-body-tertiary rounded-3">
+        <a href ="logout.jsp" class = "btn btn-secondary" role="button">로그아웃</a></li>
+        <a href ="./adminPage/notice_admin.jsp" class = "btn btn-secondary" role="button">공지글 작성</a></li>
+        <a href ="./adminPage/usermanage_admin.jsp" class = "btn btn-secondary" role="button">일반 사용자 관리</a></li>
+        <a href ="./adminPage/boardmanage_admin.jsp" class = "btn btn-secondary" role="button">게시판 관리</a></li>
     </div>
   </div>   
+  </div>
 </header>    
