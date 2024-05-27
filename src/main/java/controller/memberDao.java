@@ -24,11 +24,12 @@ public class memberDao {
 		
 		return count;
 	}
-	public ArrayList<Member> getList(int pageNumber, int count) {
+	public ArrayList<Member> getList(int pageNumber, int count, String where) {
 		ArrayList<Member> list = new ArrayList<Member>();
-		String sql = "SELECT * FROM MEMBER LIMIT ?,?";
+		String sql = "SELECT * FROM MEMBER";
+		String limit = " LIMIT ?,?";
 		try {
-			PreparedStatement stmt = con.prepareStatement(sql);
+			PreparedStatement stmt = con.prepareStatement(sql + where + limit);
 			stmt.setInt(1, (pageNumber - 1) * count );
 			stmt.setInt(2, count);
 			rs = stmt.executeQuery();
@@ -37,8 +38,10 @@ public class memberDao {
 				member.setId(rs.getString("ID"));
 				member.setEmail(rs.getString("EMAIL"));
 				member.setName(rs.getString("NAME"));
-				member.setRegisterDateTime(null);
+				member.setRegisterDateTime(null);//다시 수정할 코드
 				member.setMbti(rs.getString("MBTI"));
+				member.setLastDateTime(null);//다시 수정할 코드
+				member.setActivity(rs.getInt("ACTIVITY"));
 				list.add(member);
 			}
 		} catch (SQLException e) {
