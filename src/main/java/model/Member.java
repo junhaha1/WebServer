@@ -10,9 +10,27 @@ public class Member {
 	private String name;
 	private LocalDateTime registerDateTime;
 	private String mbti;
+	private LocalDateTime lastDateTime; //마지막 활동 시간
+	private int activity; //현재 활동중 
 	
 	public String getId() {
 		return id;
+	}
+
+	public LocalDateTime getLastDateTime() {
+		return lastDateTime;
+	}
+
+	public void setLastDateTime(LocalDateTime lastDateTime) {
+		this.lastDateTime = lastDateTime;
+	}
+
+	public int getActivity() {
+		return activity;
+	}
+
+	public void setActivity(int activity) {
+		this.activity = activity;
 	}
 
 	public void setId(String id) {
