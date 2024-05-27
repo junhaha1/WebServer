@@ -3,6 +3,9 @@
 <head>
 	<link rel="stylesheet" href="./resources/css/bootstrap.min.css" />
 	<title>Login</title>
+	<%
+		session.setAttribute("name", "admin");
+	%>
 </head>
 <body>
 	<div class="container py-4">
