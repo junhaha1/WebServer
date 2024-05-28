@@ -30,12 +30,20 @@ public class BoardController extends HttpServlet {
 		request.setCharacterEncoding("utf-8");
 	
 		if (command.equals("/BoardListAction.do")) {//등록된 글 목록 페이지 출력하기
-			RequestDispatcher rd = request.getRequestDispatcher("./board/list.jsp");
+			requestBoardList(request);
+			RequestDispatcher rd = request.getRequestDispatcher("./adminPage/boardmanage_admin.jsp");
 			rd.forward(request, response);
 		} else if (command.equals("/BoardWriteAction.do")) {//새로운 글 등록
 			requestBoardWrite(request);
 			RequestDispatcher rd = request.getRequestDispatcher("/BoardListAction.do");
 			rd.forward(request, response);						
+		} else if (command.equals("/BoardWriteForm.do")) { //글 등록 페이지 출력
+			RequestDispatcher rd = request.getRequestDispatcher("./board/writeForm.jsp");
+			rd.forward(request, response);
+		} else if(command.equals("/NoticeListAction.do")) { // 공지용 글 목록 페이지 출력
+			requestNoticeList(request);
+			RequestDispatcher rd = request.getRequestDispatcher("./adminPage/boardmanage_admin.jsp");
+			rd.forward(request, response);
 		}
 	}
    //새로운 글 등록하기
@@ -43,7 +51,9 @@ public class BoardController extends HttpServlet {
 		BoardDao dao = BoardDao.getInstance();		
 		
 		Board board = new Board();
-		board.setId(request.getParameter("name"));
+		
+		board.setId(request.getParameter("id"));
+		System.out.println(request.getParameter("name"));
 		board.setTitle(request.getParameter("subject"));
 		board.setRegdate(LocalDateTime.now());
 		board.setUpddate(null);
@@ -55,5 +65,70 @@ public class BoardController extends HttpServlet {
 		board.setSecondadd(request.getParameter("add2"));
 			
 		dao.insertBoard(board);								
+	}
+	//공지 게시글 보여주기
+	public void requestNoticeList(HttpServletRequest request) {
+		BoardDao dao = BoardDao.getInstance();
+		ArrayList<Board> boardlist = new ArrayList<Board>();
+		
+		int pageNum=1;
+		int limit=LISTCOUNT;
+		String name = "'admin'";
+		
+		if(request.getParameter("pageNum")!=null)
+			pageNum=Integer.parseInt(request.getParameter("pageNum"));
+		
+		int total_record = dao.getListCount(name); // 총 게시글 갯수
+		boardlist = dao.getBoardList(pageNum, limit, name); 
+		
+		int total_page; // 갯수
+		
+		if (total_record % limit == 0){     
+	     	total_page =total_record/limit;
+	     	Math.floor(total_page);  
+		}
+		else{
+		   total_page =total_record/limit;
+		   Math.floor(total_page); 
+		   total_page =  total_page + 1; 
+		}		
+   
+   		request.setAttribute("pageNum", pageNum);		  
+   		request.setAttribute("total_page", total_page);   
+		request.setAttribute("total_record",total_record); 
+		request.setAttribute("boardlist", boardlist);		
+		request.setAttribute("type", "notice");
+	}
+	//일반 게시글 보여주기
+	public void requestBoardList(HttpServletRequest request){
+		BoardDao dao = BoardDao.getInstance();
+		ArrayList<Board> boardlist = new ArrayList<Board>();
+		
+	  	int pageNum=1;
+		int limit=LISTCOUNT;
+		
+		if(request.getParameter("pageNum")!=null)
+			pageNum=Integer.parseInt(request.getParameter("pageNum"));
+		
+		int total_record = dao.getListCount(null); // 총 게시글 갯수
+		boardlist = dao.getBoardList(pageNum, limit, null); 
+		
+		int total_page; // 갯수
+		
+		if (total_record % limit == 0){     
+	     	total_page =total_record/limit;
+	     	Math.floor(total_page);  
+		}
+		else{
+		   total_page =total_record/limit;
+		   Math.floor(total_page); 
+		   total_page =  total_page + 1; 
+		}		
+   
+   		request.setAttribute("pageNum", pageNum);		  
+   		request.setAttribute("total_page", total_page);   
+		request.setAttribute("total_record",total_record); 
+		request.setAttribute("boardlist", boardlist);
+		request.setAttribute("type", "common");
 	}
 }

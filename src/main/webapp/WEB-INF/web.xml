@@ -9,7 +9,7 @@
 		<web-resource-collection>
 			<web-resource-name>WebServerProject</web-resource-name>
 			<description></description>
-			<url-pattern>/adminMain.jsp</url-pattern>
+			<url-pattern>/adminPage/adminMain.jsp</url-pattern>
 			<url-pattern>/adminPage/usersearch_admin.jsp</url-pattern>
 			<url-pattern>/adminPage/usermanage_admin.jsp</url-pattern>
 			<url-pattern>/adminPage/boardmanage_admin.jsp</url-pattern>

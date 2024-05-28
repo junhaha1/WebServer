@@ -27,7 +27,7 @@
   	total_user = dao.allcount();
 %>
 <div class="container py-4">
-		<%@ include file = "../menu.jsp" %>
+		<%@ include file = "./adminmenu.jsp" %>
 		
 		<div class = "p-5 mb-4 bg-body-tertiary rounded-3">
 			<div class="container-fluid py-5">
@@ -107,14 +107,14 @@
 		<%
 			if(pageNumber != 1){
     	 %>
-    	 	<a href = "usersearch_admin.jsp?pageNumber=<%=pageNumber -1 %>" class="btn btn-success btn-arraw-left">이전</a>
+    	 	<a href = "usermanage_admin.jsp?pageNumber=<%=pageNumber -1 %>" class="btn btn-success btn-arraw-left">이전</a>
     	 <%
 			}
     	 %>
     	 <%
 			if(total_user > pageNumber * count){
     	 %>
-    	 	<a href = "usersearch_admin.jsp?pageNumber=<%=pageNumber + 1 %>" class="btn btn-success btn-arraw-left">다음</a>
+    	 	<a href = "usermanage_admin.jsp?pageNumber=<%=pageNumber + 1 %>" class="btn btn-success btn-arraw-left">다음</a>
     	 <%
 			}
     	 %>

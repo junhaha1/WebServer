@@ -1,0 +1,16 @@
+insert into board values (NULL, 'test1', 'test1234', NULL, NULL, '', 'testdata', 0, 0, 'test', 'test');
+insert into board values (NULL, 'test1', 'test1234', NULL, NULL, '', 'testdata', 0, 0, 'test', 'test');
+insert into board values (NULL, 'test1', 'test1234', NULL, NULL, '', 'testdata', 0, 0, 'test', 'test');
+insert into board values (NULL, 'test1', 'test1234', NULL, NULL, '', 'testdata', 0, 0, 'test', 'test');
+insert into board values (NULL, 'test1', 'test1234', NULL, NULL, '', 'testdata', 0, 0, 'test', 'test');
+insert into board values (NULL, 'test1', 'test1234', NULL, NULL, '', 'testdata', 0, 0, 'test', 'test');
+insert into board values (NULL, 'test1', 'test1234', NULL, NULL, '', 'testdata', 0, 0, 'test', 'test');
+insert into board values (NULL, 'test1', 'test1234', NULL, NULL, '', 'testdata', 0, 0, 'test', 'test');
+insert into board values (NULL, 'test1', 'test1234', NULL, NULL, '', 'testdata', 0, 0, 'test', 'test');
+insert into board values (NULL, 'test1', 'test1234', NULL, NULL, '', 'testdata', 0, 0, 'test', 'test');s
+insert into board values (NULL, 'test1', 'test1234', NULL, NULL, '', 'testdata', 0, 0, 'test', 'test');
+insert into board values (NULL, 'test1', 'test1234', NULL, NULL, '', 'testdata', 0, 0, 'test', 'test');
+insert into board values (NULL, 'test1', 'test1234', NULL, NULL, '', 'testdata', 0, 0, 'test', 'test');
+insert into board values (NULL, 'test1', 'test1234', NULL, NULL, '', 'testdata', 0, 0, 'test', 'test');
+insert into board values (NULL, 'test1', 'test1234', NULL, NULL, '', 'testdata', 0, 0, 'test', 'test');
+insert into board values (NULL, 'test1', 'test1234', NULL, NULL, '', 'testdata', 0, 0, 'test', 'test');

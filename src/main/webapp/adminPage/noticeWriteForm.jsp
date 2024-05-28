@@ -26,7 +26,7 @@
 </script>
 <body>
 <div class="container py-4">
-	<jsp:include page="../menu.jsp" />
+	<jsp:include page="adminmenu.jsp" />
 	 <div class="p-5 mb-4 bg-body-tertiary rounded-3">
       <div class="container-fluid py-5">
       <%if(name.equals("admin")) {%>
@@ -79,7 +79,7 @@
 			</div>
 			<div class="mb-3 row">
 				<div class="col-sm-offset-2 col-sm-10 ">
-				 <a href ="../adminMain.jsp" class = "btn btn-primary" role="button">이전</a>
+				 <a href ="adminMain.jsp" class = "btn btn-primary" role="button">이전</a>
 				 <input type="submit" class="btn btn-primary " value="등록 ">				
 				 <input type="reset" class="btn btn-primary " value="초기화 ">
 				</div>
