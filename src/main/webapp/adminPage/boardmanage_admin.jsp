@@ -23,13 +23,6 @@
 <link rel="stylesheet" href="./resources/css/bootstrap.min.css" />
 <title>Board</title>
 <script type="text/javascript">
-	function checkForm() {	
-		if (${sessionId==null}) {
-			alert("로그인 해주세요.");
-			return false;
-		}
-		location.href = "./BoardWriteForm.do?id=<%=sessionId%>"
-	}
 </script>
 </head>
 <body>
@@ -57,6 +50,7 @@
 						<th>작성일</th>
 						<th>조회</th>
 						<th>글쓴이</th>
+						<th>MBTI</th>
 					</tr>
 					<%
 					if(boardList != null){
@@ -100,7 +94,7 @@
 			</div>
 			
 			<div class="py-3" align="right">							
-				<a href="#" onclick="checkForm(); return false;" class="btn btn-primary">&laquo;글쓰기</a>				
+				<a href="./NoticeWriteForm.do" class="btn btn-primary">&laquo;공지용 글쓰기</a>				
 			</div>			
 			<div align="left">				
 				<select name="items" class="txt">
@@ -109,7 +103,6 @@
 					<option value="name">글쓴이에서</option>
 				</select> <input name="text" type="text" /> <input type="submit" id="btnAdd" class="btn btn-primary " value="검색 " />				
 			</div>
-			
 		</form>			
 	</div>
 	<jsp:include page="../footer.jsp" />
