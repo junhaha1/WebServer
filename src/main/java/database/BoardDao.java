@@ -29,6 +29,8 @@ public class BoardDao {
 		
 		if(name != null)
 			sql += " WHERE ID = " + name;
+		else
+			sql += " WHERE ID != 'admin'";
 		
 		PreparedStatement stmt = null;
 		int count = 0;
@@ -101,8 +103,10 @@ public class BoardDao {
 			sql = "SELECT * from BOARD WHERE ID = " + name + " ORDER BY BID DESC LIMIT ?,?";
 		
 		PreparedStatement stmt = null;
+	
 		int start = (pageNum - 1) * limit;
-		int end = start + limit;
+		int end = limit;
+		
 		
 		ArrayList<Board> list = new ArrayList<Board>();
 		
