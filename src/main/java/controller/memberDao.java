@@ -10,9 +10,10 @@ public class memberDao {
 	public memberDao() {
 		this.con = DBconfig.makeConnection();
 	}
-	public int allcount() {
+	public int allcount(String where) {
 		int count = 0;
-		String sql = "SELECT COUNT(*) FROM MEMBER";
+		String sql = "SELECT COUNT(*) FROM MEMBER" + where;
+		
 		try {
 			PreparedStatement stmt = con.prepareStatement(sql);
 			rs = stmt.executeQuery();
