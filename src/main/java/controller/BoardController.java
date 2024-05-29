@@ -31,7 +31,8 @@ public class BoardController extends HttpServlet {
 	
 		if (command.equals("/BoardListAction.do")) {//등록된 글 목록 페이지 출력하기
 			requestBoardList(request);
-			RequestDispatcher rd = request.getRequestDispatcher("./adminPage/boardmanage_admin.jsp");
+			RequestDispatcher rd;
+			rd = request.getRequestDispatcher("./adminPage/boardmanage_admin.jsp");
 			rd.forward(request, response);
 		} else if (command.equals("/BoardWriteAction.do")) {//새로운 글 등록
 			requestBoardWrite(request);
@@ -41,10 +42,19 @@ public class BoardController extends HttpServlet {
 			RequestDispatcher rd = request.getRequestDispatcher("./board/writeForm.jsp");
 			rd.forward(request, response);
 		} else if(command.equals("/NoticeListAction.do")) { // 공지용 글 목록 페이지 출력
+			System.out.println("공지용 글 목록 출력");
 			requestNoticeList(request);
-			RequestDispatcher rd = request.getRequestDispatcher("./adminPage/boardmanage_admin.jsp");
+			RequestDispatcher rd = request.getRequestDispatcher("./adminPage/noticeManage_admin.jsp");
 			rd.forward(request, response);
-		}
+		} else if(command.equals("/NoticeWriteForm.do")) { // 공지용 글 작성 페이지 출력
+			RequestDispatcher rd = request.getRequestDispatcher("./adminPage/noticeWriteForm.jsp");
+			rd.forward(request, response);
+		} else if(command.equals("/NoticeWriteAction.do")) { // 공지용 글 등록
+			System.out.println(contextPath + command);
+			requestBoardWrite(request);
+			RequestDispatcher rd = request.getRequestDispatcher("/NoticeListAction.do");
+			rd.forward(request, response);
+		} 
 	}
    //새로운 글 등록하기
 	public void requestBoardWrite(HttpServletRequest request){
@@ -98,6 +108,8 @@ public class BoardController extends HttpServlet {
 		request.setAttribute("total_record",total_record); 
 		request.setAttribute("boardlist", boardlist);		
 		request.setAttribute("type", "notice");
+		
+		System.out.println("check");
 	}
 	//일반 게시글 보여주기
 	public void requestBoardList(HttpServletRequest request){
