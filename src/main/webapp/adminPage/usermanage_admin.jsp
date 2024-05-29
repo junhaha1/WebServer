@@ -15,16 +15,20 @@
 	int count = 8;
 	int total_user;
 	String check = ""; //검색 조건
+	String type = "Total";
 	 //만약에 파라미터로 pageNumber가 넘어왔다면 해당 파라미터의 값을 넣어주도록 한다.
     if (request.getParameter("pageNumber") != null)
         pageNumber = Integer.parseInt(request.getParameter("pageNumber")); 
   		//파라미터는 항상 정수형으로 바꿔주는 parseInt를 사용해야 한다.
-  	if(request.getParameter("check")!= null) //mbti 검색 조건
-  		check = " where MBTI = " + request.getParameter("check");
+  	if(session.getAttribute("check")!= null) {//mbti 검색 조건
+  		check = " where MBTI = " + session.getAttribute("check");
+  		type = (String)session.getAttribute("check");
+  		System.out.println(check);
+  	}
   		
   	memberDao dao = new memberDao();
   	ArrayList<Member> members = dao.getList(pageNumber, count, check);
-  	total_user = dao.allcount();
+  	total_user = dao.allcount(check);
 %>
 <div class="container py-4">
 		<%@ include file = "./adminmenu.jsp" %>
@@ -33,29 +37,34 @@
 			<div class="container-fluid py-5">
 				<h1 class="diplay-5 fw-bold">관리자용 일반 사용자 조회</h1>
 				<p class="col-md-8 fs-4">Admin Common User Search</p>
-				<p class="col-md-8 fs-4">Current Total User: <%=total_user %></p>
+				<p class="col-md-8 fs-4">Current <%=type %> User: <%=total_user %></p>
 			</div>
 		</div>
+		<a href = "processUserSearch_admin.jsp?check=null" class="btn btn-success btn-arraw-left">모든 사용자</a>
+		<form name="board" action="processUserSearch_admin.jsp" method="post">
 		<label>MBTI 검색</label>
 		<select id="check" name="check" size = 1>
 			<option value = "">없음</option>
-			<option value = "INTJ">INTJ</option>
-			<option value = "INTP">INTP</option>
-			<option value = "ENTJ">ENTJ</option>
-			<option value = "ENTP">ENTP</option>
-			<option value = "INFJ">INFJ</option>
-			<option value = "INFP">INFP</option>
-			<option value = "ENFJ">ENFJ</option>
-			<option value = "ENFP">ENFP</option>
-			<option value = "ISTJ">ISTJ</option>
-			<option value = "ISFJ">ISFJ</option>
-			<option value = "ESTJ">ESTJ</option>
-			<option value = "ESFJ">ESFJ</option>
-			<option value = "ISTP">ISTP</option>
-			<option value = "ISFP">ISFP</option>
-			<option value = "ESTP">ESTP</option>
-			<option value = "ESFP">ESFP</option>
+			<option value = "'INTJ'">INTJ</option>
+			<option value = "'INTP'">INTP</option>
+			<option value = "'ENTJ'">ENTJ</option>
+			<option value = "'ENTP'">ENTP</option>
+			<option value = "'INFJ'">INFJ</option>
+			<option value = "'INFP'">INFP</option>
+			<option value = "'ENFJ'">ENFJ</option>
+			<option value = "'ENFP'">ENFP</option>
+			<option value = "'ISTJ'">ISTJ</option>
+			<option value = "'ISFJ'">ISFJ</option>
+			<option value = "'ESTJ'">ESTJ</option>
+			<option value = "'ESFJ'">ESFJ</option>
+			<option value = "'ISTP'">ISTP</option>
+			<option value = "'ISFP'">ISFP</option>
+			<option value = "'ESTP'">ESTP</option>
+			<option value = "'ESFP'">ESFP</option>
 		</select>
+			<input type = "submit" value = "검색">
+		</form>
+			
 		<div style="padding-top: 20px">
 		<table class="table table-hover text-center">
 		<thead>
