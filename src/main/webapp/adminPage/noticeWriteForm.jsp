@@ -24,6 +24,12 @@
 		}		
 	}
 </script>
+<%
+	String adminWrite = "/NoticeWriteAction.do";
+	String route = request.getContextPath();
+	String adminhome = "/adminPage/adminMain.jsp";
+	//System.out.println(route + adminWrite);
+%>
 <body>
 <div class="container py-4">
 	<jsp:include page="adminmenu.jsp" />
@@ -41,7 +47,7 @@
 
 	<div class="row align-items-md-stretch text-center">	 	
 
-		<form name="newWrite" action="../BoardWriteAction.do"  method="post" onsubmit="return checkForm()">
+		<form name="newWrite" action=<%=route + adminWrite%>  method="post" onsubmit="return checkForm()">
 			<input name="id" type="hidden" class="form-control"
 				value=<%=name %>>
 			<div class="mb-3 row">
@@ -79,7 +85,7 @@
 			</div>
 			<div class="mb-3 row">
 				<div class="col-sm-offset-2 col-sm-10 ">
-				 <a href ="adminMain.jsp" class = "btn btn-primary" role="button">이전</a>
+				 <a href =<%=route + adminhome %> class = "btn btn-primary" role="button">이전</a>
 				 <input type="submit" class="btn btn-primary " value="등록 ">				
 				 <input type="reset" class="btn btn-primary " value="초기화 ">
 				</div>
