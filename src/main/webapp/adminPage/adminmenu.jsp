@@ -10,6 +10,7 @@
 	String notice = "/adminPage/noticeWriteForm.jsp";
 	String usermanage = "/adminPage/usermanage_admin.jsp";
 	
+	String adminWrite = "/BoardWriteAction.do";
 	String adminBoard = "/BoardListAction.do";
 	String noticeBoard = "/NoticeListAction.do";
 %>
