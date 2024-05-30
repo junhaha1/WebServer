@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=utf-8"  %>
-<%@ page import="controller.*" %>
+<%@ page import="database.*" %>
 <%@ page import="model.Member" %>
 <%@ page import="java.sql.*" %>
 <%@ page import="java.util.*" %>
@@ -26,7 +26,7 @@
   		System.out.println(check);
   	}
   		
-  	memberDao dao = new memberDao();
+  	memberDao dao = memberDao.getInstance();
   	ArrayList<Member> members = dao.getList(pageNumber, count, check);
   	total_user = dao.allcount(check);
 %>
