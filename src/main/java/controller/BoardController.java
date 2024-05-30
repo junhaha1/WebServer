@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import controller.memberDao;
 import database.BoardDao;
+import database.memberDao;
 import model.Board;
 
 import javax.servlet.*;
