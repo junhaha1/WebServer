@@ -4,7 +4,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.time.LocalDateTime;
 
-import controller.DBconfig;
 import model.Board;
 import model.Member;
 
