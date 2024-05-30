@@ -1,4 +1,4 @@
-<%@ page import="controller.DBconfig" %>
+<%@ page import="database.DBconfig" %>
 <%@ page import="model.Member" %>
 <%@ page import="java.sql.*" %>
 <%@ page import="java.util.*" %>
