@@ -20,8 +20,13 @@
 		stmt.setString(2, pw);
 		rs = stmt.executeQuery();
 		
-		if(rs.next())
+		if(rs.next()){
 			code = 0;
+			sql = "UPDATE MEMBER SET ACTIVITY = 1 WHERE ID=?";
+			stmt = con.prepareStatement(sql);
+			stmt.setString(1, id);
+			stmt.executeUpdate();
+		}
 		else //매칭 되는 아이디가 없을 경우
 			code = 1;
 		
