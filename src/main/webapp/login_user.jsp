@@ -32,7 +32,7 @@
 								out.println("</div>");
 							}
 						}catch (NumberFormatException ex){
-				            ex.printStackTrace();
+				            System.out.println("user login null check");
 				        }
 					%>
 					<form class="form-signin" action="processUserLogin.jsp" method="post">
