@@ -2,10 +2,13 @@
 
 <%
 	String name = (String) session.getAttribute("sessionId");
+	String route = request.getContextPath();
+	String userWrite = "/BoardWriteAction.userdo";
+	String home = "/userPage/mainpage.jsp";
 %>
 <html>
 <head>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="../resources/css/bootstrap.min.css" />
 <title>Board</title>
 </head>
 <script type="text/javascript">
@@ -29,19 +32,14 @@
 	<jsp:include page="../menu.jsp" />
 	 <div class="p-5 mb-4 bg-body-tertiary rounded-3">
       <div class="container-fluid py-5">
-      <%if(name.equals("admin")) {%>
-        <h1 class="display-5 fw-bold">공지글 작성</h1>
-        <p class="col-md-8 fs-4">Notice</p>      
-      <% } else {%>
         <h1 class="display-5 fw-bold">게시글 작성</h1>
         <p class="col-md-8 fs-4">Board</p>      
-      <% } %>
       </div>
     </div>
 
 	<div class="row align-items-md-stretch text-center">	 	
 
-		<form name="newWrite" action="../BoardWriteAction.do"  method="post" onsubmit="return checkForm()">
+		<form name="newWrite" action=<%=route + userWrite %>  method="post" onsubmit="return checkForm()">
 			<input name="id" type="hidden" class="form-control"
 				value=<%=name %>>
 			<div class="mb-3 row">
@@ -79,7 +77,7 @@
 			</div>
 			<div class="mb-3 row">
 				<div class="col-sm-offset-2 col-sm-10 ">
-				 <a href ="../adminMain.jsp" class = "btn btn-primary" role="button">이전</a>
+				 <a href =<%=route + home %> class = "btn btn-primary" role="button">이전</a>
 				 <input type="submit" class="btn btn-primary " value="등록 ">				
 				 <input type="reset" class="btn btn-primary " value="초기화 ">
 				</div>
