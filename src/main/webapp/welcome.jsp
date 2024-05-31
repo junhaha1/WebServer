@@ -4,6 +4,14 @@
 <head>
 	<link 04 href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel = "stylesheet">
 	<title>Welcome</title>
+	<%
+		if(session.getAttribute("sessionId")!=null){
+			if(((String)session.getAttribute("sessionId")).equals("admin")) //admin일 때
+				response.sendRedirect("./adminPage/adminMain.jsp");
+			else // 유저일 때
+				response.sendRedirect("./AllBoardListAction.userdo");
+		}
+	%>
 </head>
 <body>
 <div class="container py-4">
