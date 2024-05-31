@@ -1,13 +1,13 @@
 <%@ page contentType="text/html; charset=utf-8"  %>
 <html>
 <head>
-	<link rel="stylesheet" href="./resources/css/bootstrap.min.css" />
-	<script type="text/javascript" src="./resources/js/validation_reg.js"></script>
+	<link rel="stylesheet" href="../resources/css/bootstrap.min.css" />
+	<script type="text/javascript" src="../resources/js/validation_reg.js"></script>
 	<title>회원가입</title>
 </head>
 <body>
 <div class="container py-4">
-		<%@ include file = "menu.jsp" %>
+		<%@ include file = "../menu.jsp" %>
 		
 		<div class = "p-5 mb-4 bg-body-tertiary rounded-3">
 			<div class="container-fluid py-5">
@@ -23,7 +23,7 @@
 				out.println("</div>");
 			}
 		%>
-		<form class="form-signin" action="processRegister.jsp" name= "Member" method="post">
+		<form class="form-signin" action="../processRegister.jsp" name= "Member" method="post">
 			<div>
 				ID<input type="text" class="form-control" id="id" name="id" required autofocus>
 			</div>
@@ -45,7 +45,7 @@
 				</div>
 			</div>
 		</form>
-		<%@ include file = "footer.jsp" %>
+		<%@ include file = "../footer.jsp" %>
 	</div>
 </body>
 </html>

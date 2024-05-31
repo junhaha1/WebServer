@@ -2,11 +2,13 @@
 
 <%
 	String name = (String) session.getAttribute("sessionId");
+	String home = request.getContextPath();
+	String css = "/resources/css/bootstrap.min.css";
 %>
 <html>
 <head>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-<title>Board</title>
+<link href=<%=home + css%> rel="stylesheet">
+<title>Notice Board</title>
 </head>
 <script type="text/javascript">
 	function checkForm() {

@@ -15,8 +15,8 @@
 	memberDao dao = memberDao.getInstance();
 	if((suceId = dao.loginUser(id, pw)) != null){
 		session.setAttribute("sessionId", suceId); //해당 유저 아이디로 세션 등록
-		response.sendRedirect("mainpage.jsp"); //메인 페이지 이동
+		response.sendRedirect("./userPage/mainpage.jsp"); //메인 페이지 이동
 	} else{
-		response.sendRedirect("login_user.jsp?error=" + code); //error = 1
+		response.sendRedirect("./userPage/login_user.jsp?error=" + code); //error = 1
 	}
 %>

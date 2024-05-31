@@ -37,11 +37,11 @@
 		stmt.executeUpdate();
 		out.println("Insert Sucess");
 		
-		response.sendRedirect("welcome.jsp");
+		response.sendRedirect("./userPage/login_user.jsp");
 	} catch(SQLException e){
 		out.println("Member Insert Failed");
 		out.println("SQLException: " + e.getMessage());
-		response.sendRedirect("addmember.jsp?error=1");
+		response.sendRedirect("./userPage/addmember.jsp?error=1");
 	} finally{
 		if(stmt != null)
 			stmt.close();
