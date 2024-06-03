@@ -130,7 +130,6 @@ public class BoardDao {
 				board.setHit(rs.getInt("hit"));
 				board.setFirstadd(null);
 				board.setSecondadd(null);
-				board.setContent(sql);
 				list.add(board);
 			}
 			
@@ -149,6 +148,55 @@ public class BoardDao {
 			} catch (Exception ex) {
 				throw new RuntimeException(ex.getMessage());
 			}	
+		}
+		return null;
+	}
+	
+	public Board getBoardByNum(String BID) {
+		this.con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Board board = null;
+
+		//updateHit(num); 조회수 늘리기
+		String sql = "select * from board where BID = ? ";
+
+		try {
+			con =  DBconfig.makeConnection();
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, BID);
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				System.out.println("게시글 상세 보기 sucess");
+				board = new Board();
+				board.setBID(rs.getInt("BID"));
+				board.setId(rs.getString("id"));
+				board.setTitle(rs.getString("title"));
+				board.setRegdate(null);
+				board.setUpddate(null);
+				board.setImage(rs.getString("image"));
+				board.setContent(rs.getString("content"));
+				board.setGoohit(rs.getInt("goodhit"));
+				board.setHit(rs.getInt("hit"));
+				board.setFirstadd(null);
+				board.setSecondadd(null);
+			}
+			
+			return board;
+		} catch (Exception ex) {
+			System.out.println("getBoardByNum() error : " + ex);
+		} finally {
+			try {
+				if (rs != null) 
+					rs.close();							
+				if (pstmt != null) 
+					pstmt.close();				
+				if (con != null) 
+					con.close();
+			} catch (Exception ex) {
+				throw new RuntimeException(ex.getMessage());
+			}		
 		}
 		return null;
 	}

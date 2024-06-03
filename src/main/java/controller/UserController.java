@@ -57,6 +57,11 @@ public class UserController extends HttpServlet {
 			RequestDispatcher rd;
 			rd = request.getRequestDispatcher("/userPage/mainpage.jsp");
 			rd.forward(request, response); 
+		} else if (command.equals("/userBoardView.userdo")) {  //글 상세 페이지 출
+			System.out.println(request.getParameter("BID"));
+			requestBoardView(request);
+			RequestDispatcher rd = request.getRequestDispatcher("./board/boardview.jsp");
+			rd.forward(request, response);
 		}
 	}
 	
@@ -160,5 +165,19 @@ public class UserController extends HttpServlet {
    		request.setAttribute("total_page_notice", total_page);   
 		request.setAttribute("total_record_notice",total_record); 
 		request.setAttribute("noiceboardList", boardlist);		
+	}
+	
+	public void requestBoardView(HttpServletRequest request){
+		
+		BoardDao dao = BoardDao.getInstance();
+		String BID = request.getParameter("BID");	
+		System.out.println(BID);
+		
+		
+		Board board = new Board();
+		board = dao.getBoardByNum(BID);		
+		
+		request.setAttribute("BID", BID);		 
+   		request.setAttribute("board", board);   									
 	}
 }

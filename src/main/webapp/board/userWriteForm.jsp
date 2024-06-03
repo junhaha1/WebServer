@@ -4,7 +4,7 @@
 	String name = (String) session.getAttribute("sessionId");
 	String route = request.getContextPath();
 	String userWrite = "/BoardWriteAction.userdo";
-	String home = "/userPage/mainpage.jsp";
+	String home = "/AllBoardListAction.userdo";
 %>
 <html>
 <head>

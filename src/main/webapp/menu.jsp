@@ -11,7 +11,7 @@
 			sessionId = null;
 		} else{ //로그인 상태일 경우
 			sessionId = (String) session.getAttribute("sessionId");
-			home = "/userPage/mainpage.jsp";
+			home = "/AllBoardListAction.userdo";
 		}	
 		System.out.println((String)sessionId);
 	%>

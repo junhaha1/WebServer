@@ -2,6 +2,10 @@
 <%@ page import="java.util.*"%>
 <%@ page import="model.Board"%>
 <%
+	if(request.getAttribute("boardlist") == null){
+		System.out.println("null check");
+		response.sendRedirect("/AllBoardListAction.userdo");
+	}
 	/*일반용 게시판 관련*/
 	List boardList = (List) request.getAttribute("boardlist");	 //일반 게시판 가져오기
 	int total_record = ((Integer)request.getAttribute("total_record")).intValue(); //총 게시글 수
@@ -116,7 +120,7 @@
 					%>
 					<tr>
 						<td><%=board.getBID()%></td>
-						<td><%=board.getTitle()%></td>
+						<td><a href="./userBoardView.userdo?BID=<%=board.getBID()%>"><%=board.getTitle()%></td>
 						<td><%=board.getRegdate()%></td>
 						<td><%=board.getHit()%></td>
 						<td><%=board.getId()%></td>
