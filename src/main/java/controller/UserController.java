@@ -11,6 +11,9 @@ import model.Board;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
+import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
+import com.oreilly.servlet.MultipartRequest;
+
 
 public class UserController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -59,23 +62,41 @@ public class UserController extends HttpServlet {
 	
    //새로운 글 등록하기
 	public void requestBoardWrite(HttpServletRequest request){
+		/*파일 업로드*/
+		String upload= request.getServletContext().getRealPath("/resources/images");		
+		String encType = "utf-8";				
+		int maxSize=5*1024*1024;	
+		
+		System.out.println(upload + " => " + request.getParameter("fileName"));
+				
+		MultipartRequest multi = null;
+		
+		//파일업로드를 직접적으로 담당		
+		try {
+			multi = new MultipartRequest(request, upload, maxSize, encType);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		BoardDao dao = BoardDao.getInstance();		
 		
 		Board board = new Board();
 		
-		board.setId(request.getParameter("id"));
-		System.out.println(request.getParameter("name"));
-		board.setTitle(request.getParameter("subject"));
+		board.setId(multi.getParameter("id"));
+		System.out.println(multi.getParameter("name"));
+		board.setTitle(multi.getParameter("subject"));
 		board.setRegdate(LocalDateTime.now());
 		board.setUpddate(null);
-		board.setImage(null);
-		board.setContent(request.getParameter("content"));	
+		board.setImage(multi.getFilesystemName("fileName"));
+		board.setContent(multi.getParameter("content"));	
 		board.setGoohit(0);
 		board.setHit(0);
-		board.setFirstadd(request.getParameter("add1"));
-		board.setSecondadd(request.getParameter("add2"));
+		board.setFirstadd(multi.getParameter("add1"));
+		board.setSecondadd(multi.getParameter("add2"));
 			
-		dao.insertBoard(board);								
+		dao.insertBoard(board);			
+		
+		
 	}
 	//일반 게시글 보여주기
 	public void requestBoardList(HttpServletRequest request){
