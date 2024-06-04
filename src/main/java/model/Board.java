@@ -1,6 +1,7 @@
 package model;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Board {
 	private int BID; //글 아이디(순번)
@@ -37,6 +38,7 @@ public class Board {
 		return regdate;
 	}
 	public void setRegdate(LocalDateTime regdate) {
+		
 		this.regdate = regdate;
 	}
 	public LocalDateTime getUpddate() {
