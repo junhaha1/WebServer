@@ -3,8 +3,10 @@ package database;
 import java.sql.*;
 import java.util.ArrayList;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import model.Board;
+import model.Coment;
 import model.Member;
 
 
@@ -57,6 +59,36 @@ public class BoardDao {
 		}
 		return count;
 	}
+	public void insertComent(int BID, String ID, String coment, String PID) {
+		this.con = DBconfig.makeConnection();
+		String sql = "INSERT INTO COMENT(BID, ID, content, REGDATE, parentID) VALUE(?, ?, ?, ?, ?)";
+		PreparedStatement stmt = null;
+		try {
+			stmt = con.prepareStatement(sql);
+			
+			stmt.setInt(1, BID);
+			stmt.setString(2, ID);
+			stmt.setString(3, coment);
+			stmt.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
+			stmt.setString(5, PID);
+			
+			stmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {				
+				if (rs != null) 
+					rs.close();							
+				if (stmt != null) 
+					stmt.close();				
+				if (con != null) 
+					con.close();												
+			} catch (Exception ex) {
+				throw new RuntimeException(ex.getMessage());
+			}	
+		}
+	}
 	
 	public void insertBoard(Board board) {
 		this.con = DBconfig.makeConnection();
@@ -93,6 +125,48 @@ public class BoardDao {
 			}	
 		}
 	}
+	public ArrayList<Coment> getComentList(int BID){
+		this.con = DBconfig.makeConnection();
+		String sql = "SELECT * from COMENT WHERE BID = ?"; 
+		PreparedStatement stmt = null;
+		
+		ArrayList<Coment> list = new ArrayList<Coment>();
+		
+		try {
+			stmt = con.prepareStatement(sql);
+			stmt.setInt(1, BID);
+			
+			rs = stmt.executeQuery();
+			
+			while(rs.next()) {
+				Coment coment = new Coment();
+				coment.setCNUM(rs.getInt("CNUM"));
+				coment.setBID(rs.getInt("BID"));
+				coment.setId(rs.getString("ID"));
+				coment.setContent(rs.getString("content"));
+				coment.setRegdate(rs.getTimestamp("REGDATE").toLocalDateTime());
+				coment.setPid(rs.getString("parentID"));
+				list.add(coment);
+			}
+			
+			return list;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {				
+				if (rs != null) 
+					rs.close();							
+				if (stmt != null) 
+					stmt.close();				
+				if (con != null) 
+					con.close();												
+			} catch (Exception ex) {
+				throw new RuntimeException(ex.getMessage());
+			}	
+		}
+		return null;
+	}
 
 	public ArrayList<Board> getBoardList(int pageNum, int limit, String name) {
 		this.con = DBconfig.makeConnection();
@@ -122,7 +196,7 @@ public class BoardDao {
 				board.setBID(rs.getInt("BID"));
 				board.setId(rs.getString("id"));
 				board.setTitle(rs.getString("title"));
-				board.setRegdate(null);
+				board.setRegdate(rs.getTimestamp("regdate").toLocalDateTime());
 				board.setUpddate(null);
 				board.setImage(null);
 				board.setContent("content");
@@ -151,6 +225,42 @@ public class BoardDao {
 		}
 		return null;
 	}
+	private boolean updateHit(String BID) {
+		this.con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		boolean check = false;
+
+		//updateHit(num); 조회수 늘리기
+		String sql = "UPDATE BOARD SET HIT = HIT + 1 WHERE BID=?";
+
+		try {
+			con =  DBconfig.makeConnection();
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, BID);
+			if(pstmt.executeUpdate() > 0)
+				check = true;
+			else
+				System.out.println("조회수 갱신 실패");
+			
+			return check;
+		} catch (Exception ex) {
+			System.out.println("getBoardByNum() error : " + ex);
+		} finally {
+			try {
+				if (rs != null) 
+					rs.close();							
+				if (pstmt != null) 
+					pstmt.close();				
+				if (con != null) 
+					con.close();
+			} catch (Exception ex) {
+				throw new RuntimeException(ex.getMessage());
+			}		
+		}
+		return check;
+	}
 	
 	public Board getBoardByNum(String BID) {
 		this.con = null;
@@ -158,7 +268,7 @@ public class BoardDao {
 		ResultSet rs = null;
 		Board board = null;
 
-		//updateHit(num); 조회수 늘리기
+		
 		String sql = "select * from board where BID = ? ";
 
 		try {
@@ -173,7 +283,7 @@ public class BoardDao {
 				board.setBID(rs.getInt("BID"));
 				board.setId(rs.getString("id"));
 				board.setTitle(rs.getString("title"));
-				board.setRegdate(null);
+				board.setRegdate(rs.getTimestamp("regdate").toLocalDateTime());
 				board.setUpddate(null);
 				board.setImage(rs.getString("image"));
 				board.setContent(rs.getString("content"));
@@ -181,6 +291,8 @@ public class BoardDao {
 				board.setHit(rs.getInt("hit"));
 				board.setFirstadd(null);
 				board.setSecondadd(null);
+				
+				this.updateHit(BID); //조회수 갱신하는 코드
 			}
 			
 			return board;
