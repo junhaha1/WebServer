@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import database.BoardDao;
 import database.memberDao;
 import model.Board;
+import model.Coment;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -38,18 +39,16 @@ public class UserController extends HttpServlet {
 			RequestDispatcher rd;
 			rd = request.getRequestDispatcher("/AllBoardListAction.userdo");
 			rd.forward(request, response);
-		} else if (command.equals("/BoardListAction.userdo")) {//일반 사용자 게시글만 반영하여 메인 페이지로
+		} else if (command.equals("/BoardListAction.userdo")) {//일반 사용자 게시글만 보여주기
 			requestBoardList(request);
 			RequestDispatcher rd;
-			rd = request.getRequestDispatcher("/userPage/mainpage.jsp");
+			rd = request.getRequestDispatcher("/userPage/main_common.jsp");
 			rd.forward(request, response);
-		} else if (command.equals("/NoticeBoardListAciton.userdo")) { //공지용 게시판만 반영하여 메인 페이지로
+		} else if (command.equals("/NoticeBoardListAciton.userdo")) { //공지용 게시판만 보여주기
 			requestNoticeList(request);
-			
 			RequestDispatcher rd;
-			rd = request.getRequestDispatcher("/userPage/mainpage.jsp");
+			rd = request.getRequestDispatcher("/userPage/main_notice.jsp");
 			rd.forward(request, response); 
-			
 		} else if(command.equals("/AllBoardListAction.userdo")) { //모든 게시판 보여주기
 			requestBoardList(request);
 			requestNoticeList(request);
@@ -58,10 +57,50 @@ public class UserController extends HttpServlet {
 			rd = request.getRequestDispatcher("/userPage/mainpage.jsp");
 			rd.forward(request, response); 
 		} else if (command.equals("/userBoardView.userdo")) {  //글 상세 페이지 출
-			System.out.println(request.getParameter("BID"));
+			System.out.println("Common: " + request.getParameter("BID"));
+			String type = request.getParameter("type");
+			requestComentList(request); // 댓글 목록 가져오기
+			if(request.getAttribute("comentlist") == null)
+				System.out.println("불러오기 실패");
 			requestBoardView(request);
-			RequestDispatcher rd = request.getRequestDispatcher("./board/boardview.jsp");
+			RequestDispatcher rd;
+			
+			if(type != null && type.equals("common"))
+				rd = request.getRequestDispatcher("./board/boardview.jsp?type="+type);
+			else
+				rd = request.getRequestDispatcher("./board/boardview.jsp");
+			
 			rd.forward(request, response);
+		} else if (command.equals("/userNoticeView.userdo")) {  //공지 상세 페이지 줄
+			System.out.println("Notice: " + request.getParameter("BID"));
+			String type = request.getParameter("type");
+			
+			requestBoardView(request);
+			RequestDispatcher rd;
+			if(type != null && type.equals("notice"))
+				rd = request.getRequestDispatcher("./board/boardview.jsp?type="+type);
+			else
+				rd = request.getRequestDispatcher("./board/boardview.jsp");
+			rd.forward(request, response);
+		} else if(command.equals("/insertComent.userdo")) {
+			System.out.println("ID: " + request.getParameter("ID"));
+			System.out.println("BID: " + request.getParameter("BID"));
+			System.out.println("coment: " + request.getParameter("coment"));
+			System.out.println("type: " + request.getParameter("type"));
+			
+			String type = request.getParameter("type");
+			
+			requestInsertComent(request);
+			
+			RequestDispatcher rd = null;
+			if(type.equals("notice")) {
+				rd = request.getRequestDispatcher("/userNoticeView.userdo?type="+type);
+			}else if(type.equals("common")){
+				rd = request.getRequestDispatcher("/userBoardView.userdo?type="+type);
+			}else {
+				rd = request.getRequestDispatcher("/AllBoardListAction.userdo");
+			}
+			rd.forward(request, response); 
 		}
 	}
 	
@@ -103,6 +142,28 @@ public class UserController extends HttpServlet {
 		
 		
 	}
+	//댓글 등록하기
+	public void requestInsertComent(HttpServletRequest request) { 
+		BoardDao dao = BoardDao.getInstance();
+		int BID = Integer.parseInt(request.getParameter("BID"));
+		String ID = request.getParameter("ID");
+		String coment = request.getParameter("coment");
+		String PID = null; //후에 추가할 대댓글을 위한 부모 아이디
+		
+		dao.insertComent(BID, ID, coment, PID);
+		
+	}
+	
+	//댓글 목록 가져오기
+	public void requestComentList(HttpServletRequest request) {
+		BoardDao dao = BoardDao.getInstance();
+		ArrayList<Coment> comentlist = new ArrayList<Coment>();
+		
+		comentlist = dao.getComentList(Integer.parseInt(request.getParameter("BID")));
+   
+   		request.setAttribute("comentlist", comentlist);
+	}
+	
 	//일반 게시글 보여주기
 	public void requestBoardList(HttpServletRequest request){
 		BoardDao dao = BoardDao.getInstance();
@@ -110,6 +171,14 @@ public class UserController extends HttpServlet {
 		
 	  	int pageNum=1;
 		int limit=LISTCOUNT;
+		String type = request.getParameter("type");
+		
+		if(type != null && type.equals("common")) {
+			limit += 10;
+			request.setAttribute("type", "common");
+			System.out.println("type = " + type + "   limit: " + limit);
+		}
+			
 		
 		if(request.getParameter("pageNum")!=null)
 			pageNum=Integer.parseInt(request.getParameter("pageNum"));
@@ -140,7 +209,14 @@ public class UserController extends HttpServlet {
 		ArrayList<Board> boardlist = new ArrayList<Board>();
 		
 		int pageNum=1;
-		int limit=NOTICECOUNT;
+		int limit = NOTICECOUNT;
+		String type = request.getParameter("type");
+
+		if(type != null && type.equals("notice")){
+			limit += 10;
+			request.setAttribute("type", "notice");
+			System.out.println("type = " + type + "   limit: " + limit);
+		}
 		String name = "'admin'";
 		
 		if(request.getParameter("pageNum_notice")!=null)
@@ -171,7 +247,7 @@ public class UserController extends HttpServlet {
 		
 		BoardDao dao = BoardDao.getInstance();
 		String BID = request.getParameter("BID");	
-		System.out.println(BID);
+		//System.out.println(BID);
 		
 		
 		Board board = new Board();
