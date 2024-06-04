@@ -40,8 +40,7 @@
 	<div class="row align-items-md-stretch text-center">	 	
 
 		<form name="newWrite" action=<%=route + userWrite %> enctype="multipart/form-data" method="post" onsubmit="return checkForm()">
-			<input name="id" type="hidden" class="form-control"
-				value=<%=name %>>
+			<input name="id" type="hidden" class="form-control" value=<%=name %>>
 			<div class="mb-3 row">
 				<label class="col-sm-2 control-label" >UserID</label>
 				<div class="col-sm-3">

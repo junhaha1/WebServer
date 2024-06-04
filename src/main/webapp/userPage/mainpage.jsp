@@ -1,10 +1,12 @@
 <%@ page contentType="text/html; charset=utf-8"  %>
 <%@ page import="java.util.*"%>
 <%@ page import="model.Board"%>
+<%@ page import="java.time.*" %>
+<%@ page import="java.time.format.DateTimeFormatter" %>
 <%
 	if(request.getAttribute("boardlist") == null){
 		System.out.println("null check");
-		response.sendRedirect("/AllBoardListAction.userdo");
+		response.sendRedirect("./AllBoardListAction.userdo");
 	}
 	/*일반용 게시판 관련*/
 	List boardList = (List) request.getAttribute("boardlist");	 //일반 게시판 가져오기
@@ -23,8 +25,15 @@
 	<%	
 		if(session.getAttribute("sessionId") == null) //세션 아이디가 없으면 로그인 안됐다는 뜻
 			response.sendRedirect("../welcome.jsp");
+	
 		String name = (String)session.getAttribute("sessionId"); 
+		
+		/*버튼 눌렀을 시에 옮겨갈 페이지*/
 		String writeForm = "/board/userWriteForm.jsp";
+		String commonShow = "./BoardListAction.userdo?type=common";
+		String noticeShow = "./NoticeBoardListAciton.userdo?type=notice";
+		
+		
 		String style = "/resources/css/bootstrap.min.css";
 	%>
 	<link rel="stylesheet" href=<%=request.getContextPath() + style %> />
@@ -42,6 +51,8 @@
 		<!-- 글 작성 버튼 -->
 		<div>
 			<a href =<%=route +  writeForm%> class = "btn btn-secondary" role="button">게시글 작성</a>
+			<a href =<%=commonShow%> class = "btn btn-secondary" role="button">게시판만 보기</a>
+			<a href =<%=noticeShow%> class = "btn btn-secondary" role="button">공지만 보기</a>
 		</div>
 		<div class="row align-items-md-stretch   text-center">	 	
 		<form name="board" action="../AllBoardListAction.userdo" method="post">
@@ -62,11 +73,12 @@
 						for (int j = 0; j < noiceboardList.size() ; j++){
 							
 							Board notice = (Board) noiceboardList.get(j);
+							String date_notice = notice.getRegdate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 					%>
 					<tr>
 						<td><%=notice.getBID()%></td>
-						<td><%=notice.getTitle()%></td>
-						<td><%=notice.getRegdate()%></td>
+						<td><a href="./userNoticeView.userdo?BID=<%=notice.getBID()%>&&type=main"><%=notice.getTitle()%></td>
+						<td><%=date_notice%></td>
 						<td><%=notice.getHit()%></td>
 					</tr>
 					<%
@@ -117,11 +129,12 @@
 						for (int j = 0; j < boardList.size() ; j++){
 							
 							Board board = (Board) boardList.get(j);
+							String date = board.getRegdate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 					%>
 					<tr>
 						<td><%=board.getBID()%></td>
-						<td><a href="./userBoardView.userdo?BID=<%=board.getBID()%>"><%=board.getTitle()%></td>
-						<td><%=board.getRegdate()%></td>
+						<td><a href="./userBoardView.userdo?BID=<%=board.getBID()%>&&type=main"><%=board.getTitle()%></td>
+						<td><%=date%></td>
 						<td><%=board.getHit()%></td>
 						<td><%=board.getId()%></td>
 						
