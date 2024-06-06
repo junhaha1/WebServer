@@ -88,7 +88,7 @@ public class BoardController extends HttpServlet {
 		if(request.getParameter("pageNum")!=null)
 			pageNum=Integer.parseInt(request.getParameter("pageNum"));
 		
-		int total_record = dao.getListCount(name); // ÃÑ °Ô½Ã±Û °¹¼ö
+		int total_record = dao.getListCount("BOARD", name); // ÃÑ °Ô½Ã±Û °¹¼ö
 		boardlist = dao.getBoardList(pageNum, limit, name); 
 		
 		int total_page; // °¹¼ö
@@ -122,7 +122,7 @@ public class BoardController extends HttpServlet {
 		if(request.getParameter("pageNum")!=null)
 			pageNum=Integer.parseInt(request.getParameter("pageNum"));
 		
-		int total_record = dao.getListCount(null); // ÃÑ °Ô½Ã±Û °¹¼ö
+		int total_record = dao.getListCount("BOARD", null); // ÃÑ °Ô½Ã±Û °¹¼ö
 		boardlist = dao.getBoardList(pageNum, limit, null); 
 		
 		int total_page; // °¹¼ö
