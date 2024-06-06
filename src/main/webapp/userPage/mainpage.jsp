@@ -32,6 +32,7 @@
 		String writeForm = "/board/userWriteForm.jsp";
 		String commonShow = "./BoardListAction.userdo?type=common";
 		String noticeShow = "./NoticeBoardListAciton.userdo?type=notice";
+		String comentShow = "./comentBoardListAction.userdo?type=coment&&name="+name;
 		
 		
 		String style = "/resources/css/bootstrap.min.css";
@@ -53,6 +54,7 @@
 			<a href =<%=route +  writeForm%> class = "btn btn-secondary" role="button">게시글 작성</a>
 			<a href =<%=commonShow%> class = "btn btn-secondary" role="button">게시판만 보기</a>
 			<a href =<%=noticeShow%> class = "btn btn-secondary" role="button">공지만 보기</a>
+			<a href =<%=comentShow%> class = "btn btn-secondary" role="button">내 댓글 보기</a>
 		</div>
 		<div class="row align-items-md-stretch   text-center">	 	
 		<form name="board" action="../AllBoardListAction.userdo" method="post">
@@ -77,7 +79,7 @@
 					%>
 					<tr>
 						<td><%=notice.getBID()%></td>
-						<td><a href="./userNoticeView.userdo?BID=<%=notice.getBID()%>&&type=main"><%=notice.getTitle()%></td>
+						<td><a href="./userNoticeView.userdo?BID=<%=notice.getBID()%>&&type=notice"><%=notice.getTitle()%></td>
 						<td><%=date_notice%></td>
 						<td><%=notice.getHit()%></td>
 					</tr>
@@ -133,7 +135,7 @@
 					%>
 					<tr>
 						<td><%=board.getBID()%></td>
-						<td><a href="./userBoardView.userdo?BID=<%=board.getBID()%>&&type=main"><%=board.getTitle()%></td>
+						<td><a href="./userBoardView.userdo?BID=<%=board.getBID()%>&&type=common"><%=board.getTitle()%></td>
 						<td><%=date%></td>
 						<td><%=board.getHit()%></td>
 						<td><%=board.getId()%></td>
