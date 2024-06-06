@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 public class Coment {
 	private int CNUM;
 	private int BID;
+	private String Btitle; //글 제목만 읽어올 때 사용하기
 	private String id;
 	private String content;
 	private LocalDateTime regdate;
@@ -22,6 +23,13 @@ public class Coment {
 	}
 	public void setBID(int bID) {
 		BID = bID;
+	}
+	
+	public String getBtitle() {
+		return Btitle;
+	}
+	public void setBtitle(String btitle) {
+		Btitle = btitle;
 	}
 	public String getId() {
 		return id;
