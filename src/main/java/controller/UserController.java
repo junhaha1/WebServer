@@ -82,13 +82,14 @@ public class UserController extends HttpServlet {
 			else
 				rd = request.getRequestDispatcher("./board/boardview.jsp");
 			rd.forward(request, response);
-		} else if(command.equals("/insertComent.userdo")) {
+		} else if(command.equals("/insertComent.userdo")) { //´ñ±Û ÀÛ¼ºÇÏ±â
 			System.out.println("ID: " + request.getParameter("ID"));
 			System.out.println("BID: " + request.getParameter("BID"));
 			System.out.println("coment: " + request.getParameter("coment"));
 			System.out.println("type: " + request.getParameter("type"));
 			
 			String type = request.getParameter("type");
+			String name = request.getParameter("name");
 			
 			requestInsertComent(request);
 			
@@ -97,10 +98,17 @@ public class UserController extends HttpServlet {
 				rd = request.getRequestDispatcher("/userNoticeView.userdo?type="+type);
 			}else if(type.equals("common")){
 				rd = request.getRequestDispatcher("/userBoardView.userdo?type="+type);
+			}else if(type.equals("coment")) {
+				rd = request.getRequestDispatcher("/userBoardView.userdo?type="+type);
 			}else {
 				rd = request.getRequestDispatcher("/AllBoardListAction.userdo");
 			}
 			rd.forward(request, response); 
+		} else if(command.equals("/comentBoardListAction.userdo")) { //³» ´ñ±Û ¸ñ·Ï º¸¿©ÁÖ±â
+			requestUserComentList(request);
+			RequestDispatcher rd;
+			rd = request.getRequestDispatcher("/userPage/main_coment.jsp");
+			rd.forward(request, response);
 		}
 	}
 	
@@ -164,6 +172,46 @@ public class UserController extends HttpServlet {
    		request.setAttribute("comentlist", comentlist);
 	}
 	
+	public void requestUserComentList(HttpServletRequest request) { //´ñ±Û¸¸ º¸±â
+		BoardDao dao = BoardDao.getInstance();
+		ArrayList<Coment> comentlist = new ArrayList<Coment>();
+		
+	  	int pageNum=1;
+		int limit = LISTCOUNT;
+		String type = request.getParameter("type");
+		String name = request.getParameter("name");
+		
+		if(type != null && type.equals("coment")) {
+			request.setAttribute("type", "coment");
+			System.out.println("type = " + type + "   limit: " + limit);
+		}
+			
+		
+		if(request.getParameter("pageNum_coment")!=null)
+			pageNum=Integer.parseInt(request.getParameter("pageNum_coment"));
+		
+		int total_record = dao.getListCount("COMENT", name);
+		comentlist = dao.getUserComentList(pageNum, limit, name); 
+		
+		int total_page; // °¹¼ö
+		
+		if (total_record % limit == 0){     
+	     	total_page =total_record/limit;
+	     	Math.floor(total_page);  
+		}
+		else{
+		   total_page =total_record/limit;
+		   Math.floor(total_page); 
+		   total_page =  total_page + 1; 
+		}		
+		
+   		request.setAttribute("pageNum_coment", pageNum);		  
+   		request.setAttribute("total_page_coment", total_page);   
+		request.setAttribute("total_record_coment",total_record); 
+		request.setAttribute("comentlist", comentlist);
+		
+	}
+	
 	//ÀÏ¹Ý °Ô½Ã±Û º¸¿©ÁÖ±â
 	public void requestBoardList(HttpServletRequest request){
 		BoardDao dao = BoardDao.getInstance();
@@ -183,7 +231,7 @@ public class UserController extends HttpServlet {
 		if(request.getParameter("pageNum")!=null)
 			pageNum=Integer.parseInt(request.getParameter("pageNum"));
 		
-		int total_record = dao.getListCount(null); // ÃÑ °Ô½Ã±Û °¹¼ö
+		int total_record = dao.getListCount("BOARD", null); // ÃÑ °Ô½Ã±Û °¹¼ö
 		boardlist = dao.getBoardList(pageNum, limit, null); 
 		
 		int total_page; // °¹¼ö
@@ -204,6 +252,8 @@ public class UserController extends HttpServlet {
 		request.setAttribute("boardlist", boardlist);
 	}
 	
+	
+	
 	public void requestNoticeList(HttpServletRequest request) {
 		BoardDao dao = BoardDao.getInstance();
 		ArrayList<Board> boardlist = new ArrayList<Board>();
@@ -222,7 +272,7 @@ public class UserController extends HttpServlet {
 		if(request.getParameter("pageNum_notice")!=null)
 			pageNum=Integer.parseInt(request.getParameter("pageNum_notice"));
 		
-		int total_record = dao.getListCount(name); // ÃÑ °Ô½Ã±Û °¹¼ö
+		int total_record = dao.getListCount("BOARD", "admin"); // ÃÑ °Ô½Ã±Û °¹¼ö
 		boardlist = dao.getBoardList(pageNum, limit, name); 
 		
 		int total_page; // °¹¼ö
