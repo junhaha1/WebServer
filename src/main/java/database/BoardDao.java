@@ -24,12 +24,12 @@ public class BoardDao {
 		return instance;
 	}	
 	
-	public int getListCount(String name) {
+	public int getListCount(String table, String name) {
 		this.con = DBconfig.makeConnection();
-		String sql = "SELECT COUNT(*) from BOARD";
+		String sql = "SELECT COUNT(*) from " + table;
 		
 		if(name != null)
-			sql += " WHERE ID = " + name;
+			sql += " WHERE ID = '" + name + "'";
 		else
 			sql += " WHERE ID != 'admin'";
 		
@@ -149,6 +149,61 @@ public class BoardDao {
 				list.add(coment);
 			}
 			
+			return list;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {				
+				if (rs != null) 
+					rs.close();							
+				if (stmt != null) 
+					stmt.close();				
+				if (con != null) 
+					con.close();												
+			} catch (Exception ex) {
+				throw new RuntimeException(ex.getMessage());
+			}	
+		}
+		return null;
+	}
+	
+	public ArrayList<Coment> getUserComentList(int pageNum, int limit, String name){
+		this.con = DBconfig.makeConnection();
+		
+		String sql = "SELECT COMENT.CNUM, COMENT.BID, COMENT.ID, BOARD.TITLE, COMENT.CONTENT, COMENT.REGDATE "
+				+ "from COMENT left join BOARD on COMENT.BID = BOARD.BID where COMENT.ID = ? order by COMENT.CNUM DESC limit ?, ?"; 
+		
+		PreparedStatement stmt = null;
+		
+		System.out.println("name = " + name);
+		int start = (pageNum - 1) * limit;
+		int end = limit;
+		
+		ArrayList<Coment> list = new ArrayList<Coment>();
+		
+		try {
+			System.out.println("댓글 SQL 설정");
+			stmt = con.prepareStatement(sql);
+			stmt.setString(1, name);
+			stmt.setInt(2, start);
+			stmt.setInt(3, end);
+
+			rs = stmt.executeQuery();
+			
+			while(rs.next()) {
+				System.out.println("댓글 불러오기");
+				Coment coment = new Coment();
+				coment.setCNUM(rs.getInt("CNUM"));
+				coment.setBID(rs.getInt("BID"));
+				coment.setId(rs.getString("ID"));
+				coment.setBtitle(rs.getString("TITLE"));
+				coment.setContent(rs.getString("CONTENT"));
+				coment.setRegdate(rs.getTimestamp("REGDATE").toLocalDateTime());
+				
+				list.add(coment);
+			}
+			System.out.println("리스트 ");
 			return list;
 			
 		} catch (SQLException e) {
