@@ -15,6 +15,7 @@
 <title>test</title>
 </head>
 <body>
+<!--  
 	UserBoard Write test Page.
 	<%=test %>
 	<td colspan="6"><br><br><img src = "<%= imgroot%>/step1-25.PNG"  width="300px" height="300px"><br><br>
@@ -22,6 +23,9 @@
 			<input type="file" name="fileName"></td>
 			<input type="submit" class="btn-primary pull-right" value="글쓰기">
 	</form>
+	
+-->
+<%=(String) session.getAttribute("sessionId") %>
 	
 </body>
 </html>
