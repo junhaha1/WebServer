@@ -28,6 +28,8 @@
 			home = "/BoardListAction.userdo?type=" + type;
 		else if(type.equals("notice"))
 			home = "/NoticeBoardListAciton.userdo?type=" + type;
+		else if(type.equals("coment"))
+			home = "/comentBoardListAction.userdo?type=" + type +"&&name=" + name;
 	}
 %>
 <html>
@@ -93,7 +95,7 @@
 		</form>
 		<div class="mb-3 row">
 				<div class="col-sm-offset-2 col-sm-10 ">
-				 <form name="insertComent" action="./insertComent.userdo?type=<%=type %>"  method="post" onsubmit="return checkForm()">
+				 <form name="insertComent" action="./insertComent.userdo?type=<%=type %>&&name=<%=name %>"  method="post" onsubmit="return checkForm()">
 					 <label class="col-sm-2 control-label" >댓글 작성</label>
 					 		<input name="ID" type="hidden" class="form-control" value=<%=name %>>
 					 		<input name="BID" type="hidden" class="form-control" value=<%=board.getBID() %>>
