@@ -16,7 +16,114 @@ public class memberDao {
 		if (instance == null)
 			instance = new memberDao();
 		return instance;
-	}	
+	}
+	
+	public Member getMemberInfo(String id) {
+		this.con = DBconfig.makeConnection();
+		PreparedStatement stmt = null;
+		String sql = "SELECT * FROM MEMBER WHERE ID = ?";
+		
+		try {
+			stmt = con.prepareStatement(sql);
+			stmt.setString(1, id);
+			rs = stmt.executeQuery();
+			
+			if(rs.next()) {
+				Member member = new Member();
+				member.setId(rs.getString("ID"));
+				member.setEmail(rs.getString("EMAIL"));
+				member.setName(rs.getString("NAME"));
+				member.setRegisterDateTime(null);//다시 수정할 코드
+				member.setMbti(rs.getString("MBTI"));
+				member.setLastDateTime(null);//다시 수정할 코드
+				member.setActivity(rs.getInt("ACTIVITY"));
+				
+				return member;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {				
+				if (rs != null) 
+					rs.close();							
+				if (stmt != null) 
+					stmt.close();				
+				if (con != null) 
+					con.close();												
+			} catch (Exception ex) {
+				throw new RuntimeException(ex.getMessage());
+			}	
+		}
+		
+		return null;
+	}
+	public String checkMemberPw(String id) { //회원 탈퇴 시에 비밀번호 맞는지 확인 쿼리
+		this.con = DBconfig.makeConnection();
+		PreparedStatement stmt = null;
+		String sql = "SELECT PASSWORD FROM MEMBER WHERE ID = ?";
+		
+		try {
+			stmt = con.prepareStatement(sql);
+			stmt.setString(1, id);
+			rs = stmt.executeQuery();
+			
+			if(rs.next()) { //비밀번호 리턴해주기
+				System.out.println("db pw check: " + rs.getString("PASSWORD"));
+				return rs.getString("PASSWORD");
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {				
+				if (rs != null) 
+					rs.close();							
+				if (stmt != null) 
+					stmt.close();				
+				if (con != null) 
+					con.close();												
+			} catch (Exception ex) {
+				throw new RuntimeException(ex.getMessage());
+			}	
+		}
+		
+		return null;
+	}
+	
+	public int deleteMemberById(String id) {
+		this.con = DBconfig.makeConnection();
+		PreparedStatement stmt = null;
+		
+		String sql = "DELETE FROM MEMBER WHERE ID = ?";
+		int code = 0;
+		
+		try {
+			stmt = con.prepareStatement(sql);
+			stmt.setString(1, id);
+			
+			if(stmt.executeUpdate() > 0)
+				code = 1;
+			else
+				System.out.println("회원 탈퇴 실패");
+			
+			return code;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {				
+				if (rs != null) 
+					rs.close();							
+				if (stmt != null) 
+					stmt.close();				
+				if (con != null) 
+					con.close();												
+			} catch (Exception ex) {
+				throw new RuntimeException(ex.getMessage());
+			}	
+		}
+		
+		return 0;
+	}
 	
 	public int allcount(String where) {
 		this.con = DBconfig.makeConnection();

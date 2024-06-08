@@ -228,7 +228,7 @@ public class BoardDao {
 		String sql = "SELECT * from BOARD WHERE ID != 'admin' ORDER BY BID DESC LIMIT ?,?"; // 공지글을 제외하기(default)
 		
 		if(name != null)	
-			sql = "SELECT * from BOARD WHERE ID = " + name + " ORDER BY BID DESC LIMIT ?,?";
+			sql = "SELECT * from BOARD WHERE ID = '" + name + "' ORDER BY BID DESC LIMIT ?,?";
 		
 		PreparedStatement stmt = null;
 	

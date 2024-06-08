@@ -5,13 +5,15 @@
 		String sessionId;
 		
 		String home = "/welcome.jsp";
-		String logout = "/logout.jsp"; 
+		String logout = "/logout.jsp";
+		String userinfo = null;
 		
 		if(session.getAttribute("sessionId") == null){
 			sessionId = null;
 		} else{ //로그인 상태일 경우
 			sessionId = (String) session.getAttribute("sessionId");
 			home = "/AllBoardListAction.userdo";
+			userinfo = "/requestUserInfo.userdo?name="+sessionId;
 		}	
 		System.out.println((String)sessionId);
 	%>
@@ -29,6 +31,7 @@
 			if(sessionId != null){
 		%>
         	<a href =<%=route + logout %> class = "btn btn-secondary" role="button">로그아웃</a></li>
+        	<a href =<%=route + userinfo %> class = "btn btn-secondary" role="button">내 정보</a></li>
         <% 
 			}
         %>
