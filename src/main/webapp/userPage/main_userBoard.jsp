@@ -6,7 +6,7 @@
 <%
 	if(request.getAttribute("boardlist") == null){
 		System.out.println("null check");
-		response.sendRedirect("./AllBoardListAction.userdo");
+		response.sendRedirect(request.getContextPath() + "/AllBoardListAction.userdo");
 	}
 	/*일반용 게시판 관련*/
 	List boardList = (List) request.getAttribute("boardlist");	 //일반 게시판 가져오기
@@ -40,7 +40,7 @@
 			<a href =<%=route +  writeForm%> class = "btn btn-secondary" role="button">게시글 작성</a>
 		</div>
 	<div class="row align-items-md-stretch   text-center">	 	
-		<form name="board" action="../AllBoardListAction.userdo" method="post">
+		<form name="board" action="<%=request.getContextPath() %>/MyBoardListAction.userdo?name=<%=name %>" method="post">
 				<div class="text-end"> 
 					<span class="badge text-bg-success"><%=name %>님 게시글 전체 <%=total_record%>건	</span>
 				</div>
@@ -51,9 +51,11 @@
 						<th>번호</th>
 						<th>제목</th>
 						<th>작성일</th>
+						<th>좋아요 수</th>
 						<th>조회</th>
 						<th>글쓴이</th>
 						<th>MBTI</th>
+						<th></th>
 					</tr>
 					<%
 					if(boardList != null){
@@ -66,9 +68,11 @@
 						<td><%=board.getBID()%></td>
 						<td><a href="./userBoardView.userdo?BID=<%=board.getBID()%>&&type=common"><%=board.getTitle()%></td>
 						<td><%=date %></td>
+						<td><%=board.getGoohit()%></td>
 						<td><%=board.getHit()%></td>
 						<td><%=board.getId()%></td>
-						
+						<td></td>
+						<td><a href = "<%=request.getContextPath() %>/board/deleteBoardForm.jsp?bid=<%=board.getBID() %>&&title=<%=board.getTitle() %>" class = "btn btn-secondary" role="button">글 삭제</a></td>
 					</tr>
 					<%
 						}

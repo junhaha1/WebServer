@@ -70,6 +70,7 @@
 						<td><a href="./userBoardView.userdo?BID=<%=coment.getBID()%>&&type=coment"><%=coment.getBtitle()%></td>
 						<td><%=coment.getContent()%></td>
 						<td><%=date%></td>
+						<td><a href = "<%=request.getContextPath() %>/requestComentDelete.userdo?cnum=<%=coment.getCNUM()%>&&name=<%=name %>" class = "btn btn-secondary" role="button">댓글 삭제</a></td>
 					</tr>
 					<%
 						}

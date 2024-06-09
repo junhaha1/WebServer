@@ -34,6 +34,7 @@
 		String noticeShow = "./NoticeBoardListAciton.userdo?type=notice";
 		String comentShow = "./comentBoardListAction.userdo?type=coment&&name="+name;
 		String mynoteShow = "./MyBoardListAction.userdo?name="+name;
+		String testShow = request.getContextPath() + "/userPage/test.jsp";
 		
 		
 		String style = "/resources/css/bootstrap.min.css";
@@ -57,6 +58,7 @@
 			<a href =<%=noticeShow%> class = "btn btn-secondary" role="button">공지만 보기</a>
 			<a href =<%=mynoteShow%> class = "btn btn-secondary" role="button">내 게시글 보기</a>
 			<a href =<%=comentShow%> class = "btn btn-secondary" role="button">내 댓글 보기</a>
+			<a href =<%=testShow%> class = "btn btn-secondary" role="button">지도 보기</a>
 		</div>
 		<div class="row align-items-md-stretch   text-center">	 	
 		<form name="board" action="../AllBoardListAction.userdo" method="post">
@@ -124,6 +126,7 @@
 						<th>번호</th>
 						<th>제목</th>
 						<th>작성일</th>
+						<th>좋아요 수</th>
 						<th>조회</th>
 						<th>글쓴이</th>
 						<th>MBTI</th>
@@ -137,8 +140,9 @@
 					%>
 					<tr>
 						<td><%=board.getBID()%></td>
-						<td><a href="./userBoardView.userdo?BID=<%=board.getBID()%>&&type=common"><%=board.getTitle()%></td>
+						<td><a href="./userBoardView.userdo?BID=<%=board.getBID()%>&&type=common&&name=<%=name %>"><%=board.getTitle()%></td>
 						<td><%=date%></td>
+						<td><%=board.getGoohit()%></td>
 						<td><%=board.getHit()%></td>
 						<td><%=board.getId()%></td>
 						

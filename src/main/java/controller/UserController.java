@@ -59,6 +59,7 @@ public class UserController extends HttpServlet {
 			rd.forward(request, response); 
 		} else if (command.equals("/userBoardView.userdo")) {  //글 상세 페이지 출
 			System.out.println("Common: " + request.getParameter("BID"));
+			System.out.println("name: " + request.getParameter("name"));
 			String type = request.getParameter("type");
 			requestComentList(request); // 댓글 목록 가져오기
 			if(request.getAttribute("comentlist") == null)
@@ -136,6 +137,55 @@ public class UserController extends HttpServlet {
 				rd = request.getRequestDispatcher("/userPage/deletemember.jsp");
 			}
 			rd.forward(request, response);
+		} else if(command.equals("/requestBoardDelete.userdo")) { //게시글 삭제 액션
+			int code = requestBoardDelete(request);
+			String bid = request.getParameter("bid");
+			String title = request.getParameter("title");
+			
+			System.out.println("name: " + request.getParameter("name") + " bid: " + bid + " title: " + title);
+			request.setAttribute("code", code);
+			RequestDispatcher rd = null;
+			
+			if(code == 0 || code == 2) { //탈퇴 쿼리 중 멤버 조회 실패
+				rd = request.getRequestDispatcher("/board/deleteBoardForm.jsp?bid="+bid+"&&title="+title);
+			}
+			else if(code == 1) //글 삭제 성공
+				rd = request.getRequestDispatcher("/MyBoardListAction.userdo?name="+ request.getParameter("name"));
+			
+			rd.forward(request, response);
+		} else if(command.equals("/requestComentDelete.userdo")) { //댓글 삭제 액션
+			int code = requestComentDelete(request);
+			
+			String bid = request.getParameter("BID");
+			String cnum = request.getParameter("cnum");
+			String name = request.getParameter("name");
+			
+			System.out.println("cnum: " + cnum + " bid: " + bid + " name: " + name);
+			
+			RequestDispatcher rd = null;
+
+			if(bid == null) //내 댓글 목록에서 삭제
+				rd = request.getRequestDispatcher("/comentBoardListAction.userdo?type=coment&&name="+name);
+			else
+				rd = request.getRequestDispatcher("/userBoardView.userdo?BID=" + bid + "&&type=common");
+			
+			rd.forward(request, response);
+		} else if(command.equals("/requestUpdateGoodhit.userdo")) { //좋아요 눌렀을 때 처리
+			String BID = request.getParameter("BID");
+			String ID = request.getParameter("ID");
+			String type = request.getParameter("type");
+			requestUpdateGoodhit(request);
+			
+			RequestDispatcher rd = request.getRequestDispatcher("/userBoardView.userdo?BID="+BID+"&&name="+ID + "&&type="+type);
+			rd.forward(request, response);
+		} else if(command.equals("/requestDeleteGoodhit.userdo")) { //좋아요 눌렀을 때 처리
+			String BID = request.getParameter("BID");
+			String ID = request.getParameter("ID");
+			String type = request.getParameter("type");
+			requestDeleteGoodhit(request);
+			
+			RequestDispatcher rd = request.getRequestDispatcher("/userBoardView.userdo?BID="+BID+"&&name="+ID + "&&type="+type);
+			rd.forward(request, response);
 		}
 	}
 	
@@ -173,9 +223,7 @@ public class UserController extends HttpServlet {
 		board.setFirstadd(multi.getParameter("add1"));
 		board.setSecondadd(multi.getParameter("add2"));
 			
-		dao.insertBoard(board);			
-		
-		
+		dao.insertBoard(board);	
 	}
 	//댓글 등록하기
 	public void requestInsertComent(HttpServletRequest request) { 
@@ -187,6 +235,37 @@ public class UserController extends HttpServlet {
 		
 		dao.insertComent(BID, ID, coment, PID);
 		
+	}
+	
+	public void requestUpdateGoodhit(HttpServletRequest request) { //좋아요 눌렀을 때 
+		BoardDao dao = BoardDao.getInstance();
+		memberDao mdao = memberDao.getInstance();
+		
+		int BID = Integer.parseInt(request.getParameter("BID"));
+		String ID = request.getParameter("ID");
+		
+		if(dao.getBoardStateCount(BID) != 1) // 테이블에 없을 경우
+			dao.insertBoardState(BID);
+		
+		dao.insertUserGoodhit(BID, ID);
+		
+		Member member = mdao.getMemberInfo(ID);
+		
+		dao.updateBoardState(BID, member.getMbti());
+	}
+	
+	public void requestDeleteGoodhit(HttpServletRequest request) { //좋아요 취소 눌렀을 때 
+		BoardDao dao = BoardDao.getInstance();
+		memberDao mdao = memberDao.getInstance();
+		
+		int BID = Integer.parseInt(request.getParameter("BID"));
+		String ID = request.getParameter("ID");
+	
+		dao.deleteUserGoodhit(BID, ID);
+		
+		Member member = mdao.getMemberInfo(ID);
+		
+		dao.reduceBoardState(BID, member.getMbti());
 	}
 	
 	//댓글 목록 가져오기
@@ -206,7 +285,31 @@ public class UserController extends HttpServlet {
 		
 		request.setAttribute("member", member);
 	}
-	
+	public int requestBoardDelete(HttpServletRequest request) { //게시글 삭제하기
+		BoardDao dao = BoardDao.getInstance();
+		int code = 0;
+		String id = request.getParameter("name");
+		String pw = request.getParameter("passwd");
+		
+		String pw_check = memberDao.getInstance().checkMemberPw(id);
+		
+		System.out.println("user id pw: "+ id + "  " + pw + " db: " + pw_check + " bid: " + request.getParameter("bid"));
+		
+		if(pw_check != null && pw.equals(pw_check))
+			code = dao.deleteBoardByBid(request.getParameter("bid"));
+		else
+			return 2; //비밀번호가 틀렸다는 code값
+		
+		return code; //0은 탈퇴 실패(멤버 조회가 안됨) 1은 탈퇴 성공
+	}
+	public int requestComentDelete(HttpServletRequest request) { //댓글 삭제하기
+		BoardDao dao = BoardDao.getInstance();
+		int code = 0;
+		
+		code = dao.deleteComentByCnum(request.getParameter("cnum"));
+		
+		return code; //0은 댓글 삭제 실패(댓글 조회가 안됨) 1은 댓글 삭제 성공
+	}
 	public int requestUserDelete(HttpServletRequest request) { //유저 정보 삭제하기
 		memberDao dao = memberDao.getInstance();
 		int code = 0;
@@ -390,13 +493,20 @@ public class UserController extends HttpServlet {
 		
 		BoardDao dao = BoardDao.getInstance();
 		String BID = request.getParameter("BID");	
+		String name = request.getParameter("name");
 		//System.out.println(BID);
 		
 		
 		Board board = new Board();
-		board = dao.getBoardByNum(BID);		
+		board = dao.getBoardByNum(BID);	
+		
+		
+		int checkgood = dao.checkUserGood(name, BID); //좋아요 여부 가져오기 -> 0이라면 좋아요 누르지 않은 것 1이라면 좋아요 누른 것
+		System.out.println("이름: " + name + " 글번호: " + BID);
+		System.out.println("좋아요 check: " + checkgood);
 		
 		request.setAttribute("BID", BID);		 
-   		request.setAttribute("board", board);   									
+   		request.setAttribute("board", board); 
+   		request.setAttribute("checkgood", checkgood); 
 	}
 }

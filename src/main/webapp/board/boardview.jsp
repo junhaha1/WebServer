@@ -13,6 +13,8 @@
 	List comentlist = (List) request.getAttribute("comentlist");
 	String date = board.getRegdate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 	String BID = (String) request.getAttribute("BID");
+	int checkgood = ((Integer)request.getAttribute("checkgood")).intValue(); //사용자가 좋아요를 누른 상태인지 아닌지 확인
+	
 	
 	String imgroot = request.getContextPath() + "/resources/images";
 	
@@ -94,6 +96,26 @@
 			</table>
 		</form>
 		<div class="mb-3 row">
+			<div class="col-sm-offset-2 col-sm-10 ">
+				좋아요 수 <%=board.getGoohit() %>
+				<%if(checkgood == 0) {%>
+				<form name = "goodHit" action="<%=route %>/requestUpdateGoodhit.userdo" method="post">
+					<input name="ID" type="hidden" class="form-control" value=<%=name %>>
+					<input name="BID" type="hidden" class="form-control" value=<%=board.getBID() %>>
+					<input name="type" type="hidden" class="form-control" value=<%=type %>>
+					<input type="submit" class="btn btn-primary " value="좋아요">	
+				</form>
+				<%}else if(checkgood == 1) {%>
+				<form name = "goodHit" action="<%=route %>/requestDeleteGoodhit.userdo" method="post">
+					<input name="ID" type="hidden" class="form-control" value=<%=name %>>
+					<input name="BID" type="hidden" class="form-control" value=<%=board.getBID() %>>
+					<input name="type" type="hidden" class="form-control" value=<%=type %>>
+					<input type="submit" class="btn btn-primary " value="좋아요 취소">	
+				</form>
+				<%} %>
+			</div>
+		</div>
+		<div class="mb-3 row">
 				<div class="col-sm-offset-2 col-sm-10 ">
 				 <form name="insertComent" action="./insertComent.userdo?type=<%=type %>&&name=<%=name %>"  method="post" onsubmit="return checkForm()">
 					 <label class="col-sm-2 control-label" >댓글 작성</label>
@@ -126,6 +148,9 @@
 						<td><%=coment.getId() %></td>
 						<td><%=coment.getContent()%></td>
 						<td><%=date_coment%></td>
+						<% if (name.equals(coment.getId())){%>
+							<td><a href = "<%=request.getContextPath() %>/requestComentDelete.userdo?cnum=<%=coment.getCNUM() %>&&BID=<%=board.getBID() %>&&name=<%=name %>" class = "btn btn-secondary" role="button">댓글 삭제</a></td>
+						<%} %>
 					</tr>
 					<%
 						}

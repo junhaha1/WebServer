@@ -31,8 +31,8 @@
 		<%@ include file = "../menu.jsp" %>
 		<div class = "p-5 mb-4 bg-body-tertiary rounded-3">
 			<div class="container-fluid py-5">
-				<h1 class="diplay-5 fw-bold"><%=name %>님 게시판만 전체보기</h1>
-				<p class="col-md-8 fs-4"><%=name %>'s Main Page</p>
+				<h1 class="diplay-5 fw-bold">전체 게시글</h1>
+				<p class="col-md-8 fs-4">Total Main Board</p>
 			</div>
 		</div>
 		<!-- 글 작성 버튼 -->
@@ -51,6 +51,7 @@
 						<th>번호</th>
 						<th>제목</th>
 						<th>작성일</th>
+						<th>좋아요 수</th>
 						<th>조회</th>
 						<th>글쓴이</th>
 						<th>MBTI</th>
@@ -64,11 +65,11 @@
 					%>
 					<tr>
 						<td><%=board.getBID()%></td>
-						<td><a href="./userBoardView.userdo?BID=<%=board.getBID()%>&&type=common"><%=board.getTitle()%></td>
+						<td><a href="./userBoardView.userdo?BID=<%=board.getBID()%>&&type=common&&name="<%=name %>><%=board.getTitle()%></td>
 						<td><%=date %></td>
+						<td><%=board.getGoohit()%></td>
 						<td><%=board.getHit()%></td>
 						<td><%=board.getId()%></td>
-						
 					</tr>
 					<%
 						}

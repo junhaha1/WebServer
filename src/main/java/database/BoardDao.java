@@ -24,6 +24,70 @@ public class BoardDao {
 		return instance;
 	}	
 	
+	public int getBoardStateCount(int BID) {
+		this.con = DBconfig.makeConnection();
+		String sql = "SELECT COUNT(*) from BOARDSTATE where BID = ?";
+		
+		PreparedStatement stmt = null;
+		int count = 0;
+		
+		try {
+			stmt = con.prepareStatement(sql);
+			stmt.setInt(1, BID);
+			rs = stmt.executeQuery();
+			if(rs.next())
+				count = rs.getInt(1);
+				
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {				
+				if (rs != null) 
+					rs.close();							
+				if (stmt != null) 
+					stmt.close();				
+				if (con != null) 
+					con.close();												
+			} catch (Exception ex) {
+				throw new RuntimeException(ex.getMessage());
+			}	
+		}
+		return count;
+	}
+	
+	public int checkUserGood(String name, String BID) {
+		this.con = DBconfig.makeConnection();
+		String sql = "SELECT COUNT(*) from USERGOOD WHERE BID = ? AND ID = ?";
+		PreparedStatement stmt = null;
+		
+		int count = 0;
+		
+		try {
+			stmt = con.prepareStatement(sql);
+			stmt.setString(1, BID);
+			stmt.setString(2, name);
+			rs = stmt.executeQuery();
+			if(rs.next())
+				count = rs.getInt(1);
+				
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {				
+				if (rs != null) 
+					rs.close();							
+				if (stmt != null) 
+					stmt.close();				
+				if (con != null) 
+					con.close();												
+			} catch (Exception ex) {
+				throw new RuntimeException(ex.getMessage());
+			}	
+		}
+		return count;
+	}
+	
 	public int getListCount(String table, String name) {
 		this.con = DBconfig.makeConnection();
 		String sql = "SELECT COUNT(*) from " + table;
@@ -59,6 +123,108 @@ public class BoardDao {
 		}
 		return count;
 	}
+	
+	public void insertBoardState(int BID) { //BoardState 테이블에 게시글 등록
+		this.con = DBconfig.makeConnection();
+		String sql = "INSERT INTO BOARDSTATE(BID) VALUE(?)";
+		PreparedStatement stmt = null;
+		try {
+			stmt = con.prepareStatement(sql);
+			
+			stmt.setInt(1, BID);
+			stmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {				
+				if (rs != null) 
+					rs.close();							
+				if (stmt != null) 
+					stmt.close();				
+				if (con != null) 
+					con.close();												
+			} catch (Exception ex) {
+				throw new RuntimeException(ex.getMessage());
+			}	
+		}
+	}
+	
+	public void insertUserGoodhit(int BID, String ID) { //userGood 테이블에 해당 ID와 글ID 등록
+		this.con = DBconfig.makeConnection();
+		String sql = "INSERT INTO USERGOOD VALUE(?, ?)";
+		PreparedStatement stmt = null;
+		try {
+			stmt = con.prepareStatement(sql);
+			
+			stmt.setInt(1, BID);
+			stmt.setString(2, ID);
+			
+			stmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {				
+				if (rs != null) 
+					rs.close();							
+				if (stmt != null) 
+					stmt.close();				
+				if (con != null) 
+					con.close();												
+			} catch (Exception ex) {
+				throw new RuntimeException(ex.getMessage());
+			}	
+		}
+	}
+	public void updateBoardState(int BID, String mbti) { //boardstate 테이블에 해당 글에 좋아요 누른 mbti 값 설정
+		this.con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		String[] count = new String[mbti.length()];
+		
+		for(int i = 0; i < count.length; i++)
+			count[i] = mbti.charAt(i) + "count";
+		
+		boolean check = false;
+		
+		//updateHit(num); 조회수 늘리기
+		String sql = "UPDATE BOARDSTATE SET " + 
+					count[0] + "=" + count[0] + " + 1," +
+					count[1] + "=" + count[1] + " + 1," +
+					count[2] + "=" + count[2] + " + 1," +
+					count[3] + "=" + count[3] + " + 1 " +
+					"WHERE BID = ?";
+
+		try {
+			con =  DBconfig.makeConnection();
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, BID);
+			if(pstmt.executeUpdate() > 0) {
+				this.updateGoodhit(BID); //Board에 좋아요 수 늘리기
+				check = true;
+			}
+				
+			else
+				System.out.println("좋아요 갱신 실패");
+			
+		} catch (Exception ex) {
+			System.out.println("Board State error : " + ex);
+		} finally {
+			try {
+				if (rs != null) 
+					rs.close();							
+				if (pstmt != null) 
+					pstmt.close();				
+				if (con != null) 
+					con.close();
+			} catch (Exception ex) {
+				throw new RuntimeException(ex.getMessage());
+			}		
+		}
+	}
+	
 	public void insertComent(int BID, String ID, String coment, String PID) {
 		this.con = DBconfig.makeConnection();
 		String sql = "INSERT INTO COMENT(BID, ID, content, REGDATE, parentID) VALUE(?, ?, ?, ?, ?)";
@@ -125,6 +291,155 @@ public class BoardDao {
 			}	
 		}
 	}
+	public void deleteUserGoodhit(int BID, String ID) {
+		this.con = DBconfig.makeConnection();
+		PreparedStatement stmt = null;
+		
+		String sql = "DELETE FROM USERGOOD WHERE BID = ? AND ID = ?";
+		
+		try {
+			stmt = con.prepareStatement(sql);
+			stmt.setInt(1, BID);
+			stmt.setString(2, ID);
+			
+			if(stmt.executeUpdate() > 0)
+				System.out.println("좋아요 삭제 성공");
+			else
+				System.out.println("좋아요 삭제 실패");
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {				
+				if (rs != null) 
+					rs.close();							
+				if (stmt != null) 
+					stmt.close();				
+				if (con != null) 
+					con.close();												
+			} catch (Exception ex) {
+				throw new RuntimeException(ex.getMessage());
+			}	
+		}
+	}
+	
+	public void reduceBoardState(int BID, String mbti) {
+		this.con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		String[] count = new String[mbti.length()];
+		
+		for(int i = 0; i < count.length; i++)
+			count[i] = mbti.charAt(i) + "count";
+		
+		//boolean check = false;
+		
+		//updateHit(num); 조회수 늘리기
+		String sql = "UPDATE BOARDSTATE SET " + 
+					count[0] + "=" + count[0] + " - 1," +
+					count[1] + "=" + count[1] + " - 1," +
+					count[2] + "=" + count[2] + " - 1," +
+					count[3] + "=" + count[3] + " - 1 " +
+					"WHERE BID = ?";
+		try {
+			con =  DBconfig.makeConnection();
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, BID);
+			if(pstmt.executeUpdate() > 0) {
+				this.reduceGoodhit(BID); //Board에 좋아요 수 줄이기
+				//check = true;
+			}
+				
+			else
+				System.out.println("좋아요 줄이기 실패");
+			
+		} catch (Exception ex) {
+			System.out.println("Board State error : " + ex);
+		} finally {
+			try {
+				if (rs != null) 
+					rs.close();							
+				if (pstmt != null) 
+					pstmt.close();				
+				if (con != null) 
+					con.close();
+			} catch (Exception ex) {
+				throw new RuntimeException(ex.getMessage());
+			}		
+		}
+	}
+	
+	public int deleteBoardByBid(String bid) {
+		this.con = DBconfig.makeConnection();
+		PreparedStatement stmt = null;
+		
+		String sql = "DELETE FROM BOARD WHERE BID = ?";
+		int code = 0;
+		
+		try {
+			stmt = con.prepareStatement(sql);
+			stmt.setString(1, bid);
+			
+			if(stmt.executeUpdate() > 0)
+				code = 1;
+			else
+				System.out.println("글 삭제 실패");
+			
+			return code;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {				
+				if (rs != null) 
+					rs.close();							
+				if (stmt != null) 
+					stmt.close();				
+				if (con != null) 
+					con.close();												
+			} catch (Exception ex) {
+				throw new RuntimeException(ex.getMessage());
+			}	
+		}
+		return 0;
+	}
+	
+	public int deleteComentByCnum(String cnum) {
+		this.con = DBconfig.makeConnection();
+		PreparedStatement stmt = null;
+		
+		String sql = "DELETE FROM COMENT WHERE CNUM = ?";
+		int code = 0;
+		
+		try {
+			stmt = con.prepareStatement(sql);
+			stmt.setString(1, cnum);
+			
+			if(stmt.executeUpdate() > 0)
+				code = 1;
+			else
+				System.out.println("댓글 삭제 실패");
+			
+			return code;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {				
+				if (rs != null) 
+					rs.close();							
+				if (stmt != null) 
+					stmt.close();				
+				if (con != null) 
+					con.close();												
+			} catch (Exception ex) {
+				throw new RuntimeException(ex.getMessage());
+			}	
+		}
+		
+		return 0;
+	}
+	
 	public ArrayList<Coment> getComentList(int BID){
 		this.con = DBconfig.makeConnection();
 		String sql = "SELECT * from COMENT WHERE BID = ?"; 
@@ -280,7 +595,81 @@ public class BoardDao {
 		}
 		return null;
 	}
-	private boolean updateHit(String BID) {
+	
+	private boolean updateGoodhit(int BID) { //좋아요 갯수 업데이트
+		this.con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		boolean check = false;
+
+		//updateHit(num); 조회수 늘리기
+		String sql = "UPDATE BOARD SET GOODHIT = GOODHIT + 1 WHERE BID=?";
+
+		try {
+			con =  DBconfig.makeConnection();
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, BID);
+			if(pstmt.executeUpdate() > 0)
+				check = true;
+			else
+				System.out.println("좋아요 갱신 실패");
+			
+			return check;
+		} catch (Exception ex) {
+			System.out.println("좋아요 갱신 실패 error : " + ex);
+		} finally {
+			try {
+				if (rs != null) 
+					rs.close();							
+				if (pstmt != null) 
+					pstmt.close();				
+				if (con != null) 
+					con.close();
+			} catch (Exception ex) {
+				throw new RuntimeException(ex.getMessage());
+			}		
+		}
+		return check;
+	}
+	private boolean reduceGoodhit(int BID) { //좋아요 갯수 업데이트
+		this.con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		boolean check = false;
+
+		//updateHit(num); 조회수 늘리기
+		String sql = "UPDATE BOARD SET GOODHIT = GOODHIT - 1 WHERE BID=?";
+
+		try {
+			con =  DBconfig.makeConnection();
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, BID);
+			if(pstmt.executeUpdate() > 0)
+				check = true;
+			else
+				System.out.println("좋아요 줄이기 갱신 실패");
+			
+			return check;
+		} catch (Exception ex) {
+			System.out.println("좋아요 줄이기 갱신 실패 error : " + ex);
+		} finally {
+			try {
+				if (rs != null) 
+					rs.close();							
+				if (pstmt != null) 
+					pstmt.close();				
+				if (con != null) 
+					con.close();
+			} catch (Exception ex) {
+				throw new RuntimeException(ex.getMessage());
+			}		
+		}
+		return check;
+	}
+	
+	private boolean updateHit(String BID) { //조회수 업데이트
 		this.con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
