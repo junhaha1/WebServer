@@ -3,10 +3,12 @@ package controller;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 import database.BoardDao;
 import database.memberDao;
 import model.Board;
+import model.Coment;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -54,8 +56,102 @@ public class BoardController extends HttpServlet {
 			requestBoardWrite(request);
 			RequestDispatcher rd = request.getRequestDispatcher("/NoticeListAction.do");
 			rd.forward(request, response);
+		} else if(command.equals("/BoardViewAction.do")) { // 글 상세보기
+			System.out.println("Common: " + request.getParameter("BID"));
+			System.out.println("name: " + request.getParameter("name"));
+			System.out.println("type: " + request.getParameter("type"));
+			String type = request.getParameter("type");
+			
+			requestComentList(request); // 댓글 목록 가져오기
+			if(request.getAttribute("comentlist") == null)
+				System.out.println("불러오기 실패");
+			requestBoardView(request);
+			RequestDispatcher rd;
+			
+			rd = request.getRequestDispatcher("./board/boardview.jsp?type="+type);
+			
+			rd.forward(request, response);
+		} else if(command.equals("/SearchListAction.do")) { // 게시글 겁색하기
+			System.out.println("items: " + request.getParameter("items"));
+			System.out.println("text: " + request.getParameter("text"));
+			System.out.println("type: " + request.getParameter("type"));
+			requestSearchList(request);
+			
+			//List searchlist = (List) request.getAttribute("searchlist");
+			
+			RequestDispatcher rd = request.getRequestDispatcher("./adminPage/researchBoard_admin.jsp");
+			
+			rd.forward(request, response);
 		} 
 	}
+	public void requestSearchList(HttpServletRequest request) { //검색 목록 가져오기
+		BoardDao dao = BoardDao.getInstance();
+		ArrayList<Board> searchlist = new ArrayList<Board>();
+		
+		int pageNum=1;
+		int limit=LISTCOUNT;
+		
+		String name = request.getParameter("text");
+		int code = Integer.parseInt(request.getParameter("items"));
+		String type = request.getParameter("type");
+		
+		if(request.getParameter("pageNum")!=null)
+			pageNum=Integer.parseInt(request.getParameter("pageNum"));
+		
+		int total_record = dao.getSearchCount("BOARD", code, name, type); // 총 게시글 갯수
+		searchlist = dao.getSearchList(pageNum, limit, code, name, type); // 해당 게시글들 정보
+		
+		int total_page; // 갯수
+		
+		if (total_record % limit == 0){     
+	     	total_page =total_record/limit;
+	     	Math.floor(total_page);  
+		}
+		else{
+		   total_page =total_record/limit;
+		   Math.floor(total_page); 
+		   total_page =  total_page + 1; 
+		}		
+   
+   		request.setAttribute("pageNum", pageNum);		  
+   		request.setAttribute("total_page", total_page);   
+		request.setAttribute("total_record",total_record); 
+		request.setAttribute("searchlist", searchlist);		
+		request.setAttribute("type", type);
+		request.setAttribute("items", code);
+		request.setAttribute("text", name);
+		
+		System.out.println("check");
+	}
+	
+	public void requestComentList(HttpServletRequest request) { //댓글 목록 가져오기
+		BoardDao dao = BoardDao.getInstance();
+		ArrayList<Coment> comentlist = new ArrayList<Coment>();
+		
+		comentlist = dao.getComentList(Integer.parseInt(request.getParameter("BID")));
+   
+   		request.setAttribute("comentlist", comentlist);
+	}
+	
+	public void requestBoardView(HttpServletRequest request){ //상세 글 정보 가져오기
+		
+		BoardDao dao = BoardDao.getInstance();
+		String BID = request.getParameter("BID");	
+		String name = request.getParameter("name");
+		//System.out.println(BID);
+		
+		
+		Board board = new Board();
+		board = dao.getBoardByNum(BID);	
+		
+		int checkgood = -1; //관리자 라면 -1로 좋아요 버튼 없음.
+		System.out.println("이름: " + name + " 글번호: " + BID);
+		
+		request.setAttribute("BID", BID);		 
+   		request.setAttribute("board", board); 
+   		request.setAttribute("checkgood", checkgood); 
+	}
+	
    //새로운 글 등록하기
 	public void requestBoardWrite(HttpServletRequest request){
 		BoardDao dao = BoardDao.getInstance();		
@@ -71,8 +167,10 @@ public class BoardController extends HttpServlet {
 		board.setContent(request.getParameter("content"));	
 		board.setGoohit(0);
 		board.setHit(0);
-		board.setFirstadd(request.getParameter("add1"));
-		board.setSecondadd(request.getParameter("add2"));
+		board.setPaddress(null);
+		board.setPname(null);
+		board.setLatclick(null);
+		board.setLngclick(null);
 			
 		dao.insertBoard(board);								
 	}
@@ -83,7 +181,7 @@ public class BoardController extends HttpServlet {
 		
 		int pageNum=1;
 		int limit=LISTCOUNT;
-		String name = "'admin'";
+		String name = "admin";
 		
 		if(request.getParameter("pageNum")!=null)
 			pageNum=Integer.parseInt(request.getParameter("pageNum"));

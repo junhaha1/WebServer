@@ -17,7 +17,7 @@
 <div class="container py-4">
 	<%@ include file = "menu.jsp" %>
 	<%! 
-		String greeting= "맛집 추천 리스트에 오신 것을 환영합니다.";
+		String greeting= "맛집 게시판에 오신 것을 환영합니다.";
 		String tagline = "현재 시각";
 	%>
 	

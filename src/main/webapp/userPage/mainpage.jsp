@@ -34,7 +34,7 @@
 		String noticeShow = "./NoticeBoardListAciton.userdo?type=notice";
 		String comentShow = "./comentBoardListAction.userdo?type=coment&&name="+name;
 		String mynoteShow = "./MyBoardListAction.userdo?name="+name;
-		String testShow = request.getContextPath() + "/userPage/test.jsp";
+		// String testShow = request.getContextPath() + "/userPage/test.jsp"; //테스트 코드
 		
 		
 		String style = "/resources/css/bootstrap.min.css";
@@ -58,7 +58,6 @@
 			<a href =<%=noticeShow%> class = "btn btn-secondary" role="button">공지만 보기</a>
 			<a href =<%=mynoteShow%> class = "btn btn-secondary" role="button">내 게시글 보기</a>
 			<a href =<%=comentShow%> class = "btn btn-secondary" role="button">내 댓글 보기</a>
-			<a href =<%=testShow%> class = "btn btn-secondary" role="button">지도 보기</a>
 		</div>
 		<div class="row align-items-md-stretch   text-center">	 	
 		<form name="board" action="../AllBoardListAction.userdo" method="post">
@@ -145,7 +144,7 @@
 						<td><%=board.getGoohit()%></td>
 						<td><%=board.getHit()%></td>
 						<td><%=board.getId()%></td>
-						
+						<td><%=board.getMbti() %></td>
 					</tr>
 					<%
 						}

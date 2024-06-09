@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 public class Board {
 	private int BID; //글 아이디(순번)
 	private String id; //작성 유저 아이디 #admin => 관리자
+	private String mbti; //작성 유저 mbti
 	private String title; //글 제목
 	private LocalDateTime regdate; //등록일자
 	private LocalDateTime upddate; //수정일자
@@ -13,8 +14,10 @@ public class Board {
 	private String content;
 	private int goohit; // 좋아요 수
 	private int hit; //조회수
-	private String firstadd; //첫번째 시
-	private String secondadd; //두번째 구
+	private String pname; // 음식점 이름
+	private String paddress; //도로명 주소
+	private String latclick; //위도
+	private String lngclick; //경도
 	
 	public int getBID() {
 		return BID;
@@ -27,6 +30,12 @@ public class Board {
 	}
 	public void setId(String id) {
 		this.id = id;
+	}
+	public String getMbti() {
+		return mbti;
+	}
+	public void setMbti(String mbti) {
+		this.mbti = mbti;
 	}
 	public String getTitle() {
 		return title;
@@ -56,6 +65,30 @@ public class Board {
 	public String getContent() {
 		return content;
 	}
+	public String getPname() {
+		return pname;
+	}
+	public void setPname(String pname) {
+		this.pname = pname;
+	}
+	public String getPaddress() {
+		return paddress;
+	}
+	public void setPaddress(String paddress) {
+		this.paddress = paddress;
+	}
+	public String getLatclick() {
+		return latclick;
+	}
+	public void setLatclick(String latclick) {
+		this.latclick = latclick;
+	}
+	public String getLngclick() {
+		return lngclick;
+	}
+	public void setLngclick(String lngclick) {
+		this.lngclick = lngclick;
+	}
 	public void setContent(String content) {
 		this.content = content;
 	}
@@ -71,18 +104,7 @@ public class Board {
 	public void setHit(int hit) {
 		this.hit = hit;
 	}
-	public String getFirstadd() {
-		return firstadd;
-	}
-	public void setFirstadd(String firstadd) {
-		this.firstadd = firstadd;
-	}
-	public String getSecondadd() {
-		return secondadd;
-	}
-	public void setSecondadd(String secondadd) {
-		this.secondadd = secondadd;
-	}
+	
 	
 	
 }

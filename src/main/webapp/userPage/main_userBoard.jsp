@@ -71,7 +71,7 @@
 						<td><%=board.getGoohit()%></td>
 						<td><%=board.getHit()%></td>
 						<td><%=board.getId()%></td>
-						<td></td>
+						<td><%=board.getMbti() %></td>
 						<td><a href = "<%=request.getContextPath() %>/board/deleteBoardForm.jsp?bid=<%=board.getBID() %>&&title=<%=board.getTitle() %>" class = "btn btn-secondary" role="button">글 삭제</a></td>
 					</tr>
 					<%

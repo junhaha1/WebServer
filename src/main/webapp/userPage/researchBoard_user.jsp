@@ -1,20 +1,35 @@
 <%@ page contentType="text/html; charset=utf-8"  %>
 <%@ page import="java.util.*"%>
-<%@ page import="model.Board"%>
+<%@ page import="model.*"%>
 <%@ page import="java.time.*" %>
 <%@ page import="java.time.format.DateTimeFormatter" %>
 <%
-	if(request.getAttribute("boardlist") == null){
-		System.out.println("null check");
-		response.sendRedirect("./AllBoardListAction.userdo");
-	}
-	/*일반용 게시판 관련*/
-	List boardList = (List) request.getAttribute("boardlist");	 //일반 게시판 가져오기
-	int total_record = ((Integer)request.getAttribute("total_record")).intValue(); //총 게시글 수
-	int pageNum = ((Integer)request.getAttribute("pageNum")).intValue(); //현재 페이지 번호
-	int total_page = ((Integer)request.getAttribute("total_page")).intValue(); //총 페이지 나눈거 
+	List searchlist = (List) request.getAttribute("searchlist");	
+	int total_record = ((Integer)request.getAttribute("total_record")).intValue();
+	int pageNum = ((Integer)request.getAttribute("pageNum")).intValue();
+	int total_page = ((Integer)request.getAttribute("total_page")).intValue();
+	int items  = ((Integer)request.getAttribute("items")).intValue();
+	String text = (String) request.getAttribute("text");
 	
-	session.removeAttribute("researchLogList");
+	if(session.getAttribute("researchLogList") == null){
+		ArrayList<SearchLog> researchLogList = new ArrayList<SearchLog>();
+		session.setAttribute("researchLogList", researchLogList);
+	}
+	
+	SearchLog log = new SearchLog();
+	log.setPageNum(pageNum);
+	log.setItems(items);
+	log.setText(text);
+	log.setType((String)request.getAttribute("type"));
+	
+	List logList = (List) session.getAttribute("researchLogList");
+	logList.add(0, log);
+	
+	for(int i = 0; i < logList.size(); i++){
+		log = (SearchLog) logList.get(i);
+		System.out.println(log);
+	}
+	session.setAttribute("researchLogList", logList);
 %>
 <html>
 <head>
@@ -40,6 +55,7 @@
 		<!-- 글 작성 버튼 -->
 		<div>
 			<a href =<%=route +  writeForm%> class = "btn btn-secondary" role="button">게시글 작성</a>
+			<a href ="<%=route%>/BoardListAction.userdo?type=common" class = "btn btn-secondary" role="button">게시판만 보기</a>
 			<a href ="./AllBoardListAction.userdo" class = "btn btn-secondary" role="button">메인으로</a>
 		</div>
 	<div class="row align-items-md-stretch   text-center">	 	
@@ -60,15 +76,15 @@
 						<th>MBTI</th>
 					</tr>
 					<%
-					if(boardList != null){
-						for (int j = 0; j < boardList.size() ; j++){
+					if(searchlist != null){
+						for (int j = 0; j < searchlist.size() ; j++){
 							
-							Board board = (Board) boardList.get(j);
+							Board board = (Board) searchlist.get(j);
 							String date = board.getRegdate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 					%>
 					<tr>
 						<td><%=board.getBID()%></td>
-						<td><a href="./userBoardView.userdo?BID=<%=board.getBID()%>&&type=common&&name="<%=name %>><%=board.getTitle()%></td>
+						<td><a href="./userBoardView.userdo?BID=<%=board.getBID()%>&name=<%=name %>&type=user_search"><%=board.getTitle()%></td>
 						<td><%=date %></td>
 						<td><%=board.getGoohit()%></td>
 						<td><%=board.getHit()%></td>
@@ -85,7 +101,7 @@
 			<%
 				for(int i = 1; i <= total_page; i++){
 			%>
-				<a href="./BoardListAction.userdo?pageNum=<%=i %>&&type=common" />
+				<a href="./SearchListAction.userdo?pageNum=<%=i %>&items=<%=items %>&text=<%=text %>&type=<%=log.getType() %>" />
 			<%		if(pageNum == i){ %>
 						<font color='4C5317'><b> [<%=i %>]</b></font></a>
 			<%
@@ -99,16 +115,7 @@
 				}
 			%>					
 			</div>
-			<div align="left">				
-				<select name="items" class="txt">
-					<option value="1">제목에서</option>
-					<option value="2">본문에서</option>
-					<option value="0">글쓴이에서</option>
-					<option value="3">mbti에서</option>
-				</select> <input name="text" type="text" /> 
-				<input type="hidden" name="type" value = "user"/> 
-				<input type="submit" id="btnAdd" class="btn btn-primary " value="검색 " />				
-			</div>
+			
 		</form>			
 	</div>
 		<%@ include file = "../footer.jsp" %>

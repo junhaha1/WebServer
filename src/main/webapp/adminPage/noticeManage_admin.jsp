@@ -1,6 +1,8 @@
 <%@ page contentType="text/html; charset=utf-8"%>
 <%@ page import="java.util.*"%>
 <%@ page import="model.Board"%>
+<%@ page import="java.time.*" %>
+<%@ page import="java.time.format.DateTimeFormatter" %>
 <%
 	String sessionId = (String) session.getAttribute("sessionId");
 	List boardList = (List) request.getAttribute("boardlist");	
@@ -13,6 +15,8 @@
 	
 	title = "공지용 게시판 목록";
 	subTitle = "Notic Board";
+	
+	session.removeAttribute("researchLogList");
 %>
 <html>
 <head>
@@ -33,7 +37,7 @@
     </div>
 	
 	<div class="row align-items-md-stretch   text-center">	 	
-		<form name="board" action="../NoticeListAction.do" method="post">
+		<form name="search" action= "<%=request.getContextPath() %>/SearchListAction.do" method="post">
 				<div class="text-end"> 
 					<span class="badge text-bg-success">전체 <%=total_record%>건	</span>
 				</div>
@@ -46,18 +50,18 @@
 						<th>작성일</th>
 						<th>조회</th>
 						<th>글쓴이</th>
-						<th>MBTI</th>
 					</tr>
 					<%
 					if(boardList != null){
 						for (int j = 0; j < boardList.size() ; j++){
 							
 							Board notice = (Board) boardList.get(j);
+							String date = notice.getRegdate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 					%>
 					<tr>
 						<td><%=notice.getBID()%></td>
-						<td><a href="../BoardViewAction.do?num=<%=notice.getBID()%>&pageNum=<%=pageNum%>" /><%=notice.getTitle()%></a></td>
-						<td><%=notice.getRegdate()%></td>
+						<td><a href="./BoardViewAction.do?BID=<%=notice.getBID()%>&name=<%=sessionId %>&type=admin_notice" /><%=notice.getTitle()%></a></td>
+						<td><%=date%></td>
 						<td><%=notice.getHit()%></td>
 						<td><%=notice.getId()%></td>
 					</tr>
@@ -83,21 +87,20 @@
 			%>
 			<%
 				}
-			%>					
-									
-								
-					
+			%>										
 			</div>
-			
 			<div class="py-3" align="right">							
 				<a href="./NoticeWriteForm.do" class="btn btn-primary">&laquo;공지용 글쓰기</a>				
 			</div>			
 			<div align="left">				
 				<select name="items" class="txt">
-					<option value="subject">제목에서</option>
-					<option value="content">본문에서</option>
-					<option value="name">글쓴이에서</option>
-				</select> <input name="text" type="text" /> <input type="submit" id="btnAdd" class="btn btn-primary " value="검색 " />				
+					<option value="1">제목에서</option>
+					<option value="2">본문에서</option>
+					<option value="0">글쓴이에서</option>
+					<option value="3">mbti에서</option>
+				</select> <input name="text" type="text" /> 
+				<input type="hidden" name="type" value = "notice"/> 
+				<input type="submit" id="btnAdd" class="btn btn-primary " value="검색 " />				
 			</div>
 		</form>			
 	</div>

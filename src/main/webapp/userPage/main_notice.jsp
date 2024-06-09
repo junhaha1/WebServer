@@ -14,6 +14,7 @@
 	int pageNum_notice = ((Integer)request.getAttribute("pageNum_notice")).intValue();
 	int total_page_notice = ((Integer)request.getAttribute("total_page_notice")).intValue(); 
 	
+	session.removeAttribute("researchLogList");
 %>
 <html>
 <head>
@@ -43,9 +44,9 @@
 				<p class="col-md-8 fs-4"><%=name %>'s Main Page</p>
 			</div>
 		</div>
-
+		<a href ="./AllBoardListAction.userdo" class = "btn btn-secondary" role="button">메인으로</a>
 		<div class="row align-items-md-stretch   text-center">	 	
-		<form name="board" action=<%=noticeShow %> method="post">
+		<form name="search" action= "<%=request.getContextPath() %>/SearchListAction.userdo" method="post">	
 				<div class="text-end"> 
 					<span class="badge text-bg-success">공지 전체 <%=total_record_notice%>건	</span>
 				</div>
@@ -95,6 +96,16 @@
 				}
 			%>					
 					
+			</div>
+			<div align="left">				
+				<select name="items" class="txt">
+					<option value="1">제목에서</option>
+					<option value="2">본문에서</option>
+					<option value="0">글쓴이에서</option>
+					<option value="3">mbti에서</option>
+				</select> <input name="text" type="text" /> 
+				<input type="hidden" name="type" value = "notice"/> 
+				<input type="submit" id="btnAdd" class="btn btn-primary " value="검색 " />				
 			</div>
 		</form>			
 	</div>

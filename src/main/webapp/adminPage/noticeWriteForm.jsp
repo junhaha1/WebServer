@@ -59,21 +59,6 @@
 				</div>
 			</div>
 			<div class="mb-3 row">
-				<label class="col-sm-2 control-label" >지역</label>
-				<div class="col-sm-8">
-					<select id="add1" name="add1" size = 1>
-						<option value = "서울특별시">서울특별시</option>
-						<option value = "경기도">경기도</option>
-						<option value = "경상도">경상도</option>
-					</select>
-					<select id="add2" name="add2" size = 1>
-						<option value = "도봉구">도봉구</option>
-						<option value = "노원구">노원구</option>
-						<option value = "동대문구">동대문구</option>
-					</select>
-				</div>
-			</div>
-			<div class="mb-3 row">
 				<label class="col-sm-2 control-label" >제목</label>
 				<div class="col-sm-5">
 					<input name="subject" type="text" class="form-control"	placeholder="subject">

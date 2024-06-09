@@ -121,7 +121,7 @@ public class UserController extends HttpServlet {
 			RequestDispatcher rd;
 			rd = request.getRequestDispatcher("/userPage/memberInfo.jsp");
 			rd.forward(request, response);
-		} else if(command.equals("/requestUserDelete.userdo")) { // 유저 정보 삭제하기 -> 수정해야될 부분
+		} else if(command.equals("/requestUserDelete.userdo")) { // 유저 정보 삭제하기 
 			int code = requestUserDelete(request);
 			request.setAttribute("code", code);
 			RequestDispatcher rd = null;
@@ -186,7 +186,56 @@ public class UserController extends HttpServlet {
 			
 			RequestDispatcher rd = request.getRequestDispatcher("/userBoardView.userdo?BID="+BID+"&&name="+ID + "&&type="+type);
 			rd.forward(request, response);
+		} else if(command.equals("/SearchListAction.userdo")) { // 게시글 겁색하기
+			System.out.println("items: " + request.getParameter("items"));
+			System.out.println("text: " + request.getParameter("text"));
+			System.out.println("type: " + request.getParameter("type"));
+			requestSearchList(request);
+			
+			RequestDispatcher rd = request.getRequestDispatcher("./userPage/researchBoard_user.jsp");
+			
+			rd.forward(request, response);
+		} 
+	}
+	
+	public void requestSearchList(HttpServletRequest request) { //검색 목록 가져오기
+		BoardDao dao = BoardDao.getInstance();
+		ArrayList<Board> searchlist = new ArrayList<Board>();
+		
+		int pageNum=1;
+		int limit=LISTCOUNT;
+		
+		String name = request.getParameter("text");
+		int code = Integer.parseInt(request.getParameter("items"));
+		String type = request.getParameter("type");
+		
+		if(request.getParameter("pageNum")!=null)
+			pageNum=Integer.parseInt(request.getParameter("pageNum"));
+		
+		int total_record = dao.getSearchCount("BOARD", code, name, type); // 총 게시글 갯수
+		searchlist = dao.getSearchList(pageNum, limit, code, name, type); // 해당 게시글들 정보
+		
+		int total_page; // 갯수
+		
+		if (total_record % limit == 0){     
+	     	total_page =total_record/limit;
+	     	Math.floor(total_page);  
 		}
+		else{
+		   total_page =total_record/limit;
+		   Math.floor(total_page); 
+		   total_page =  total_page + 1; 
+		}		
+   
+   		request.setAttribute("pageNum", pageNum);		  
+   		request.setAttribute("total_page", total_page);   
+		request.setAttribute("total_record",total_record); 
+		request.setAttribute("searchlist", searchlist);		
+		request.setAttribute("type", type);
+		request.setAttribute("items", code);
+		request.setAttribute("text", name);
+		
+		System.out.println("check");
 	}
 	
    //새로운 글 등록하기
@@ -208,10 +257,13 @@ public class UserController extends HttpServlet {
 		}
 		
 		BoardDao dao = BoardDao.getInstance();		
+		memberDao mdao = memberDao.getInstance();
 		
 		Board board = new Board();
+		Member member = mdao.getMemberInfo(multi.getParameter("id"));
 		
 		board.setId(multi.getParameter("id"));
+		board.setMbti(member.getMbti());
 		System.out.println(multi.getParameter("name"));
 		board.setTitle(multi.getParameter("subject"));
 		board.setRegdate(LocalDateTime.now());
@@ -220,8 +272,10 @@ public class UserController extends HttpServlet {
 		board.setContent(multi.getParameter("content"));	
 		board.setGoohit(0);
 		board.setHit(0);
-		board.setFirstadd(multi.getParameter("add1"));
-		board.setSecondadd(multi.getParameter("add2"));
+		board.setPname(multi.getParameter("pname"));
+		board.setPaddress(multi.getParameter("paddress"));
+		board.setLatclick(multi.getParameter("latclick"));
+		board.setLngclick(multi.getParameter("lngclick"));
 			
 		dao.insertBoard(board);	
 	}

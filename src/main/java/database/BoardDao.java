@@ -258,21 +258,24 @@ public class BoardDao {
 	
 	public void insertBoard(Board board) {
 		this.con = DBconfig.makeConnection();
-		String sql = "INSERT INTO BOARD(ID, TITLE, REGDATE, UPDATETIME, IMAGE, CONTENT, GOODHIT, HIT, FIRSTADD, SECONDADD) VALUE(?, ? ,? ,? ,?, ?, ?, ? ,? ,?)";
+		String sql = "INSERT INTO BOARD(ID, MBTI, TITLE, REGDATE, UPDATETIME, IMAGE, CONTENT, GOODHIT, HIT, PNAME, PADDRESS, LATCLICK, LNGCLICK) VALUE(?, ?, ? ,? ,? ,?, ?, ?, ? , ?, ?, ? ,?)";
 		PreparedStatement stmt = null;
 		try {
 			stmt = con.prepareStatement(sql);
 			
 			stmt.setString(1, board.getId());
-			stmt.setString(2, board.getTitle());
-			stmt.setTimestamp(3, Timestamp.valueOf(board.getRegdate()));
-			stmt.setTimestamp(4, null);
-			stmt.setString(5, board.getImage());
-			stmt.setString(6, board.getContent());
-			stmt.setInt(7, board.getGoohit());
-			stmt.setInt(8, board.getHit());
-			stmt.setString(9, board.getFirstadd());
-			stmt.setString(10, board.getSecondadd());
+			stmt.setString(2, board.getMbti());
+			stmt.setString(3, board.getTitle());
+			stmt.setTimestamp(4, Timestamp.valueOf(board.getRegdate()));
+			stmt.setTimestamp(5, null);
+			stmt.setString(6, board.getImage());
+			stmt.setString(7, board.getContent());
+			stmt.setInt(8, board.getGoohit());
+			stmt.setInt(9, board.getHit());
+			stmt.setString(10, board.getPname());
+			stmt.setString(11, board.getPaddress());
+			stmt.setString(12, board.getLatclick());
+			stmt.setString(13, board.getLngclick());
 			
 			stmt.executeUpdate();
 			
@@ -537,6 +540,142 @@ public class BoardDao {
 		}
 		return null;
 	}
+	
+	public int getSearchCount(String table, int code, String name, String type) { //해당 글 조건의 글 갯수 가져오기
+		this.con = DBconfig.makeConnection();
+		String sql = "SELECT COUNT(*) from " + table;
+		String where = "";
+		String str = name.trim();
+		if(code == 0) //글쓴이
+			where = " WHERE ID = '" + str + "'";
+		else if(code == 1) {
+			if(type.equals("user")) //공지용 제외
+				where = " WHERE ID != 'admin' AND TITLE like '%" + str + "%'";
+			else //공지용에서만
+				where = " WHERE ID = 'admin' AND TITLE like '%" + str + "%'";
+		}
+		else if(code == 2) { //내용에서
+			if(type.equals("user")) //공지용 제외
+				where = " WHERE ID != 'admin' AND CONTENT like '%" + str + "%'";
+			else //공지용에서만
+				where = " WHERE ID = 'admin' AND CONTENT like '%" + str + "%'";
+		}
+		
+		sql = sql + where;
+		
+		PreparedStatement stmt = null;
+		int count = 0;
+		
+		try {
+			stmt = con.prepareStatement(sql);
+			rs = stmt.executeQuery();
+			if(rs.next())
+				count = rs.getInt(1);
+				
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {				
+				if (rs != null) 
+					rs.close();							
+				if (stmt != null) 
+					stmt.close();				
+				if (con != null) 
+					con.close();												
+			} catch (Exception ex) {
+				throw new RuntimeException(ex.getMessage());
+			}	
+		}
+		return count;
+	}
+	
+	public ArrayList<Board> getSearchList(int pageNum, int limit, int code, String name, String type) { //검색한 글 목록 불러오기
+		this.con = DBconfig.makeConnection();
+		String sql = "SELECT * from BOARD";
+		String where = "";
+		String str = name.trim();
+		
+		if(code == 0) //글쓴이
+			where = " WHERE ID = '" + str + "'";
+		else if(code == 1) {
+			if(type.equals("user")) //공지용 제외
+				where = " WHERE ID != 'admin' AND TITLE like '%" + str + "%'";
+			else //공지용에서만
+				where = " WHERE ID = 'admin' AND TITLE like '%" + str + "%'";
+		}
+		else if(code == 2) { //내용에서
+			if(type.equals("user")) //공지용 제외
+				where = " WHERE ID != 'admin' AND CONTENT like '%" + str + "%'";
+			else //공지용에서만
+				where = " WHERE ID = 'admin' AND CONTENT like '%" + str + "%'";
+		}
+		else if(code == 3) { //mbti
+			str = str.toUpperCase();
+			if(type.equals("user")) //공지용 제외
+				where = " WHERE ID != 'admin' AND MBTI = '" + str + "'";
+			else //공지용에서만
+				where = " WHERE ID = 'admin' AND MBTI = '" + str + "'";
+		}
+			
+		String check = " ORDER BY BID DESC LIMIT ?,?"; 
+		
+		sql = sql + where + check;
+		
+		PreparedStatement stmt = null;
+	
+		int start = (pageNum - 1) * limit;
+		int end = limit;
+		
+		
+		ArrayList<Board> list = new ArrayList<Board>();
+		
+		try {
+			stmt = con.prepareStatement(sql);
+			stmt.setInt(1, start);
+			stmt.setInt(2, end);
+			
+			
+			rs = stmt.executeQuery();
+			
+			while(rs.next()) {
+				Board board = new Board();
+				board.setBID(rs.getInt("BID"));
+				board.setId(rs.getString("id"));
+				board.setMbti(rs.getString("mbti"));
+				board.setTitle(rs.getString("title"));
+				board.setRegdate(rs.getTimestamp("regdate").toLocalDateTime());
+				board.setUpddate(null);
+				board.setImage(null);
+				board.setContent("content");
+				board.setGoohit(rs.getInt("goodhit"));
+				board.setHit(rs.getInt("hit"));
+				board.setPname(rs.getString("pname"));
+				board.setPaddress(rs.getString("paddress"));
+				board.setLatclick(rs.getString("latclick"));
+				board.setLngclick(rs.getString("lngclick"));
+				
+				list.add(board);
+			}
+			
+			return list;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {				
+				if (rs != null) 
+					rs.close();							
+				if (stmt != null) 
+					stmt.close();				
+				if (con != null) 
+					con.close();												
+			} catch (Exception ex) {
+				throw new RuntimeException(ex.getMessage());
+			}	
+		}
+		return null;
+	}
 
 	public ArrayList<Board> getBoardList(int pageNum, int limit, String name) {
 		this.con = DBconfig.makeConnection();
@@ -565,6 +704,7 @@ public class BoardDao {
 				Board board = new Board();
 				board.setBID(rs.getInt("BID"));
 				board.setId(rs.getString("id"));
+				board.setMbti(rs.getString("mbti"));
 				board.setTitle(rs.getString("title"));
 				board.setRegdate(rs.getTimestamp("regdate").toLocalDateTime());
 				board.setUpddate(null);
@@ -572,8 +712,11 @@ public class BoardDao {
 				board.setContent("content");
 				board.setGoohit(rs.getInt("goodhit"));
 				board.setHit(rs.getInt("hit"));
-				board.setFirstadd(null);
-				board.setSecondadd(null);
+				board.setPname(rs.getString("pname"));
+				board.setPaddress(rs.getString("paddress"));
+				board.setLatclick(rs.getString("latclick"));
+				board.setLngclick(rs.getString("lngclick"));
+				
 				list.add(board);
 			}
 			
@@ -733,8 +876,10 @@ public class BoardDao {
 				board.setContent(rs.getString("content"));
 				board.setGoohit(rs.getInt("goodhit"));
 				board.setHit(rs.getInt("hit"));
-				board.setFirstadd(null);
-				board.setSecondadd(null);
+				board.setPname(rs.getString("pname"));
+				board.setPaddress(rs.getString("paddress"));
+				board.setLatclick(rs.getString("latclick"));
+				board.setLngclick(rs.getString("lngclick"));
 				
 				this.updateHit(BID); //조회수 갱신하는 코드
 			}
