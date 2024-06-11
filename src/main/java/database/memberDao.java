@@ -1,6 +1,8 @@
 package database;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.time.format.*;
 
 import model.Member;
 
@@ -17,6 +19,79 @@ public class memberDao {
 			instance = new memberDao();
 		return instance;
 	}
+	
+	public void autoDeletMemberById(String id) { //자동으로 멤버 탈퇴 시켜주는 메소드 
+		this.con = DBconfig.makeConnection();
+		PreparedStatement stmt = null;
+		
+		LocalDateTime time = LocalDateTime.now().plusDays(1);
+		String date = time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+		
+		String sql = "CREATE EVENT IF NOT EXISTS autoDelete"+id
+				+ " ON SCHEDULE"
+				+ " AT ?"
+				+ " ON COMPLETION NOT PRESERVE"
+				+ "  COMMENT 'match auto delete User'"
+				+ " DO"
+				+ "  DELETE FROM webproject.MEMBER"
+				+ "  WHERE ID = ? AND DELDATE<=NOW();";
+		
+		try {
+			stmt = con.prepareStatement(sql);
+			stmt.setString(1,  date);
+			stmt.setString(2, id);
+			
+			stmt.execute();
+			
+			updateDelDate(id, time);
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {				
+				if (rs != null) 
+					rs.close();							
+				if (stmt != null) 
+					stmt.close();				
+				if (con != null) 
+					con.close();												
+			} catch (Exception ex) {
+				throw new RuntimeException(ex.getMessage());
+			}	
+		}
+	}
+	
+	private void updateDelDate(String id, LocalDateTime time) {
+		
+		this.con = DBconfig.makeConnection();
+		String sql = "UPDATE MEMBER SET DELDATE = ?, DELCODE = 1 WHERE ID=?";
+		PreparedStatement stmt = null;
+		
+		try {
+			stmt = con.prepareStatement(sql);
+			
+			stmt.setTimestamp(1, Timestamp.valueOf(time));
+			stmt.setString(2, id);
+			
+			stmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {				
+				if (rs != null) 
+					rs.close();							
+				if (stmt != null) 
+					stmt.close();				
+				if (con != null) 
+					con.close();												
+			} catch (Exception ex) {
+				throw new RuntimeException(ex.getMessage());
+			}	
+		}
+		
+	}
+	
 	public int checkMemberById(String id) {
 		this.con = DBconfig.makeConnection();
 		PreparedStatement stmt = null;
@@ -65,11 +140,13 @@ public class memberDao {
 				member.setId(rs.getString("ID"));
 				member.setEmail(rs.getString("EMAIL"));
 				member.setName(rs.getString("NAME"));
-				member.setRegisterDateTime(null);//다시 수정할 코드
+				member.setRegisterDateTime(null);
+				//member.setRegisterDateTime(rs.getTimestamp("REGDATE").toLocalDateTime());
 				member.setMbti(rs.getString("MBTI"));
 				member.setLastDateTime(null);//다시 수정할 코드
 				member.setActivity(rs.getInt("ACTIVITY"));
-				
+				if (rs.getTimestamp("DELDATE") != null)
+					member.setDeleteDateTime(rs.getTimestamp("DELDATE").toLocalDateTime());
 				return member;
 			}
 		} catch (SQLException e) {
@@ -202,10 +279,14 @@ public class memberDao {
 				member.setId(rs.getString("ID"));
 				member.setEmail(rs.getString("EMAIL"));
 				member.setName(rs.getString("NAME"));
-				member.setRegisterDateTime(null);//다시 수정할 코드
+				member.setRegisterDateTime(null);
+				//member.setRegisterDateTime(rs.getTimestamp("REGDATE").toLocalDateTime());
 				member.setMbti(rs.getString("MBTI"));
 				member.setLastDateTime(null);//다시 수정할 코드
 				member.setActivity(rs.getInt("ACTIVITY"));
+				
+				if (rs.getInt("DELCODE") == 1)
+					member.setDeleteDateTime(rs.getTimestamp("DELDATE").toLocalDateTime());
 				list.add(member);
 			}
 		} catch (SQLException e) {

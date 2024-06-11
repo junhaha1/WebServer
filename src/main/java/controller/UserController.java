@@ -214,7 +214,7 @@ public class UserController extends HttpServlet {
 			requestMailView(request);
 			RequestDispatcher rd = request.getRequestDispatcher("./board/messageView.jsp");
 			rd.forward(request, response);
-		} else if(command.equals("/sendMail.userdo")) { // 메일 상세보기 불러오기
+		} else if(command.equals("/sendMail.userdo")) { // 메일 보내기
 			System.out.println("uid: " + request.getParameter("uid"));
 			System.out.println("rid: " + request.getParameter("rid"));
 			System.out.println("title: " + request.getParameter("title"));

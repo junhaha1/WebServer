@@ -3,10 +3,12 @@
 <%@ page import="model.Member" %>
 <%@ page import="java.sql.*" %>
 <%@ page import="java.util.*" %>
+<%@ page import="java.time.format.*" %>
+
 
 <html>
 <head>
-<link rel="stylesheet" href="../resources/css/bootstrap.min.css" />
+<link rel="stylesheet" href="<%=request.getContextPath() %>/resources/css/bootstrap.min.css" />
 <title>관리자용 일반 사용자 조회</title>
 </head>
 <body>
@@ -76,6 +78,7 @@
 				<th>MBTI</th>
 				<th>마지막 접속</th>
 				<th>활동 상태</th>
+				<th>강제 탈퇴</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -107,6 +110,11 @@
 				<%
 				}
 				%>
+				<%if(member.getDeleteDateTime()!=null) {%>
+				<td style="color:red"><strong><%=member.getDeleteDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) %></strong></td>
+				<%} else {%>
+				<td><a href = "<%=request.getContextPath() %>/adminPage/userDeleteForm.jsp?id=<%=member.getId() %>" class="btn btn-success btn-arraw-left">강제 탈퇴</a></td>
+				<% }%>
 			</tr>
 			<%
 				}			

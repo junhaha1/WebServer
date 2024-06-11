@@ -12,9 +12,18 @@ public class Member {
 	private String mbti;
 	private LocalDateTime lastDateTime; //마지막 활동 시간
 	private int activity; //현재 활동중 
+	private LocalDateTime deleteDateTime; //탈퇴 예정 시간
 	
 	public String getId() {
 		return id;
+	}
+
+	public LocalDateTime getDeleteDateTime() {
+		return deleteDateTime;
+	}
+
+	public void setDeleteDateTime(LocalDateTime deleteDateTime) {
+		this.deleteDateTime = deleteDateTime;
 	}
 
 	public LocalDateTime getLastDateTime() {

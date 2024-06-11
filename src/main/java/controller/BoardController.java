@@ -2,13 +2,16 @@ package controller;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 import database.BoardDao;
 import database.memberDao;
+import database.messageDao;
 import model.Board;
 import model.Coment;
+import model.Message;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -82,8 +85,39 @@ public class BoardController extends HttpServlet {
 			RequestDispatcher rd = request.getRequestDispatcher("./adminPage/researchBoard_admin.jsp");
 			
 			rd.forward(request, response);
-		} 
+		}  else if(command.equals("/sendDeleteMail.do")) { // 유저 강제 탈퇴 메일 보내기
+			boolean check = requestSendDeleteMail(request);
+			
+			RequestDispatcher rd = request.getRequestDispatcher("./adminPage/usermanage_admin.jsp");
+			
+			rd.forward(request, response);
+			
+		}
 	}
+	
+	public boolean requestSendDeleteMail(HttpServletRequest request) {//메일 보내기
+		messageDao dao = messageDao.getInstance();
+		memberDao mdao = memberDao.getInstance();
+		
+		int result = mdao.checkMemberById(request.getParameter("rid"));
+		if(result == 0) {
+			request.setAttribute("error", "riderror");
+			return false; //보내는 아이디가 없다. 
+		}
+		
+		mdao.autoDeletMemberById(request.getParameter("rid"));
+		
+		Message msg = new Message();
+		msg.setUID(request.getParameter("uid"));
+		msg.setRID(request.getParameter("rid"));
+		msg.setTITLE(request.getParameter("title"));
+		msg.setCONTENT(request.getParameter("content"));
+		
+		dao.insertMessage(msg);
+		
+		return true;
+	}
+	
 	public void requestSearchList(HttpServletRequest request) { //검색 목록 가져오기
 		BoardDao dao = BoardDao.getInstance();
 		ArrayList<Board> searchlist = new ArrayList<Board>();
