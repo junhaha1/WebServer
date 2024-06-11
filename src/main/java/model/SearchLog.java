@@ -4,11 +4,18 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class SearchLog {
+	private Object content; //로그 내용 //Board객체 등등
 	private int pageNum;
 	private int items;
 	private String text;
 	private String type;
 	
+	public Object getContent() {
+		return content;
+	}
+	public void setContent(Object content) {
+		this.content = content;
+	}
 	public int getPageNum() {
 		return pageNum;
 	}

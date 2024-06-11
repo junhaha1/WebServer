@@ -12,7 +12,7 @@
 	String menu = "../menu.jsp";
 	if(name.equals("admin"))
 		menu = "../adminPage/adminmenu.jsp";
-	System.out.println(menu);
+	//System.out.println(menu);
 
 	Board board = (Board) request.getAttribute("board");
 	List comentlist = (List) request.getAttribute("comentlist");
@@ -64,6 +64,11 @@
 			SearchLog log = (SearchLog) loglist.get(0);
 			home = "/SearchListAction.userdo?pageNum="+log.getPageNum()+"&items="+log.getItems()+"&text=" +log.getText()+"&type="+log.getType();
 			System.out.println("이전 체크: " + home);
+		}else if(type.equals("user_mbtisearch")){
+			SearchLog log = (SearchLog)session.getAttribute("researchLog");
+			home = "/userPage/main_sortMbtiBoardView.jsp";
+			System.out.println("이전 체크: " + home);
+			session.setAttribute("checkMove", "return");
 		}
 		
 	}

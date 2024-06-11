@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; charset=utf-8"  %>
 <%@ page import="java.util.*"%>
-<%@ page import="model.Board"%>
+<%@ page import="model.*"%>
 <%@ page import="java.time.*" %>
 <%@ page import="java.time.format.DateTimeFormatter" %>
 <%

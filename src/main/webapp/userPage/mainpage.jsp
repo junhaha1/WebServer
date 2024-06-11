@@ -19,6 +19,10 @@
 	int total_record_notice = ((Integer)request.getAttribute("total_record_notice")).intValue();
 	int pageNum_notice = ((Integer)request.getAttribute("pageNum_notice")).intValue();
 	int total_page_notice = ((Integer)request.getAttribute("total_page_notice")).intValue(); 
+	
+	
+	session.removeAttribute("researchLog");
+	session.removeAttribute("checkMove");
 %>
 <html>
 <head>
@@ -27,13 +31,13 @@
 			response.sendRedirect("../welcome.jsp");
 	
 		String name = (String)session.getAttribute("sessionId"); 
-		
 		/*버튼 눌렀을 시에 옮겨갈 페이지*/
 		String writeForm = "/board/userWriteForm.jsp";
 		String commonShow = "./BoardListAction.userdo?type=common";
 		String noticeShow = "./NoticeBoardListAciton.userdo?type=notice";
 		String comentShow = "./comentBoardListAction.userdo?type=coment&&name="+name;
 		String mynoteShow = "./MyBoardListAction.userdo?name="+name;
+		String mbtiShow = "./sortMbtiBoard.userdo?mbti=infj"; // 테스트 코드
 		// String testShow = request.getContextPath() + "/userPage/test.jsp"; //테스트 코드
 		
 		
@@ -49,6 +53,7 @@
 			<div class="container-fluid py-5">
 				<h1 class="diplay-5 fw-bold"><%=name %>님 메인 페이지</h1>
 				<p class="col-md-8 fs-4"><%=name %>'s Main Page</p>
+				<a href =<%=mbtiShow%> class = "btn btn-secondary" role="button">내 MBTI 추천 게시글</a> 
 			</div>
 		</div>
 		<!-- 글 작성 버튼 -->

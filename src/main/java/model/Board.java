@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Board {
+	
 	private int BID; //글 아이디(순번)
 	private String id; //작성 유저 아이디 #admin => 관리자
 	private String mbti; //작성 유저 mbti
@@ -105,6 +106,9 @@ public class Board {
 		this.hit = hit;
 	}
 	
-	
+	@Override
+	public String toString() {
+		return "Board [BID=" + BID + ", id=" + id + ", title=" + title + ", goohit=" + goohit + ", hit=" + hit + "]";
+	}
 	
 }

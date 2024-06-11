@@ -55,6 +55,169 @@ public class BoardDao {
 		return count;
 	}
 	
+	public ArrayList<Board> getMbtiResearchBoard(String[] mbti){
+		this.con = DBconfig.makeConnection();
+		
+		String sql = "SELECT BID, "; 
+		String where = " as mbtiset FROM BOARDSTATE ORDER BY mbtiset desc LIMIT 5";
+		
+		String mbti_s = "";
+		
+		ArrayList<Integer> BIDs = new ArrayList<Integer>();
+		
+		for(int i = 0; i < mbti.length; i++) {
+			if(!mbti[i].equals("")) {
+				mbti_s += mbti[i]+"count";
+			}
+			if(i+1 < mbti.length && !mbti_s.equals("") && !mbti[i+1].equals("") ) {
+				mbti_s += "+";
+			}
+		}
+		
+		sql = sql + mbti_s + where;
+		
+		System.out.println(sql);
+		
+		PreparedStatement stmt = null;
+		
+		ArrayList<Board> list = new ArrayList<Board>();
+		
+		try {
+			stmt = con.prepareStatement(sql);
+			
+			rs = stmt.executeQuery();
+			while(rs.next()) {
+				BIDs.add(rs.getInt("BID"));
+			}
+			
+			list = getSortBoardList(BIDs);
+			
+			return list;
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {				
+				if (rs != null) 
+					rs.close();							
+				if (stmt != null) 
+					stmt.close();				
+				if (con != null) 
+					con.close();												
+			} catch (Exception ex) {
+				throw new RuntimeException(ex.getMessage());
+			}	
+		}
+		return null;
+	}
+	public ArrayList<Board> getSortBoard(String mbti){ //해당 사용자 mbti 상위 5개
+		this.con = DBconfig.makeConnection();
+		
+		String[] count = new String[mbti.length()];
+		ArrayList<Integer> BIDs = new ArrayList<Integer>();
+		
+		for(int i = 0; i < count.length; i++)
+			count[i] = mbti.charAt(i) + "count";
+		
+		String sql = "SELECT BID, " + count[0] + "+" +  count[1] +  "+" + count[2] + "+" + count[3] + " as mbtiset FROM BOARDSTATE ORDER BY mbtiset desc LIMIT 5";
+		
+		System.out.println(sql);
+		
+		PreparedStatement stmt = null;
+		
+		ArrayList<Board> list = new ArrayList<Board>();
+		
+		try {
+			stmt = con.prepareStatement(sql);
+			
+			rs = stmt.executeQuery();
+			while(rs.next()) {
+				BIDs.add(rs.getInt("BID"));
+			}
+			
+			list = getSortBoardList(BIDs);
+			
+			return list;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {				
+				if (rs != null) 
+					rs.close();							
+				if (stmt != null) 
+					stmt.close();				
+				if (con != null) 
+					con.close();												
+			} catch (Exception ex) {
+				throw new RuntimeException(ex.getMessage());
+			}	
+		}
+		return null;
+	}
+	
+	private ArrayList<Board> getSortBoardList(ArrayList<Integer> BIDs){
+		this.con = DBconfig.makeConnection();
+		String sql = "SELECT * FROM BOARD WHERE BID";
+		String instart = " IN (";
+		String inend = ")";
+		
+		for(int i = 0; i < BIDs.size(); i++) {
+			instart += BIDs.get(i);
+			if(i + 1 < BIDs.size())
+				instart += ",";
+			System.out.println( BIDs.get(i));
+		}
+		
+		sql = sql + instart + inend;
+		
+		PreparedStatement stmt = null;
+		
+		ArrayList<Board> list = new ArrayList<Board>();
+	
+		try {
+			stmt = con.prepareStatement(sql);
+			
+			rs = stmt.executeQuery();
+			
+			while(rs.next()) {
+				Board board = new Board();
+				board.setBID(rs.getInt("BID"));
+				board.setId(rs.getString("id"));
+				board.setMbti(rs.getString("mbti"));
+				board.setTitle(rs.getString("title"));
+				board.setRegdate(rs.getTimestamp("regdate").toLocalDateTime());
+				board.setUpddate(null);
+				board.setImage(null);
+				board.setContent("content");
+				board.setGoohit(rs.getInt("goodhit"));
+				board.setHit(rs.getInt("hit"));
+				board.setPname(rs.getString("pname"));
+				board.setPaddress(rs.getString("paddress"));
+				board.setLatclick(rs.getString("latclick"));
+				board.setLngclick(rs.getString("lngclick"));
+				list.add(board);
+			}
+			
+			return list;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {				
+				if (rs != null) 
+					rs.close();							
+				if (stmt != null) 
+					stmt.close();				
+				if (con != null) 
+					con.close();												
+			} catch (Exception ex) {
+				throw new RuntimeException(ex.getMessage());
+			}	
+		}
+		return null;
+	}
 	public int checkUserGood(String name, String BID) {
 		this.con = DBconfig.makeConnection();
 		String sql = "SELECT COUNT(*) from USERGOOD WHERE BID = ? AND ID = ?";

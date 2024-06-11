@@ -3,6 +3,7 @@ package controller;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 import database.BoardDao;
 import database.memberDao;
@@ -239,7 +240,60 @@ public class UserController extends HttpServlet {
 					rd = request.getRequestDispatcher("./userPage/msg_false.jsp");
 				rd.forward(request, response);
 			}
+		} else if(command.equals("/sortMbtiBoard.userdo")) { //추천 게시글
+			System.out.println("mbti: " + request.getParameter("mbti"));
+			requestSortMbti(request);
+			
+			List mbtiboardlist = (List)request.getAttribute("mbtiboardlist");
+			
+			for(int i = 0; i < mbtiboardlist.size(); i++)
+				System.out.println((Board)mbtiboardlist.get(i));
+			
+			
+			RequestDispatcher rd = request.getRequestDispatcher("./userPage/main_sortMbtiBoardView.jsp");
+			rd.forward(request, response);
+		} else if(command.equals("/searchMbtiBoard.userdo")) {
+			System.out.println("mbti_ie: " + request.getParameter("mbti_ie"));
+			System.out.println("mbti_sn: " + request.getParameter("mbti_sn"));
+			System.out.println("mbti_ft: " + request.getParameter("mbti_ft"));
+			System.out.println("mbti_pj: " + request.getParameter("mbti_pj"));
+			researchSortMbti(request);
+			
+			List mbtiboardlist = (List)request.getAttribute("mbtiboardlist");
+			
+			for(int i = 0; i < mbtiboardlist.size(); i++)
+				System.out.println((Board)mbtiboardlist.get(i));
+			
+			RequestDispatcher rd = request.getRequestDispatcher("./userPage/main_sortMbtiBoardView.jsp");
+			rd.forward(request, response);
+
 		}
+	}
+	public void researchSortMbti(HttpServletRequest request) {
+		BoardDao dao = BoardDao.getInstance();
+		String[] mbtis = {	request.getParameter("mbti_ie"),
+							request.getParameter("mbti_sn"),
+							request.getParameter("mbti_ft"),
+							request.getParameter("mbti_pj")
+						};
+		ArrayList<Board> mbtiboardlist = dao.getMbtiResearchBoard(mbtis);
+		
+		String mbti = "";
+		for(int i = 0; i < mbtis.length; i++)
+			mbti += mbtis[i];
+		
+		request.setAttribute("mbtiboardlist", mbtiboardlist);
+		request.setAttribute("mbti", mbti);
+	}
+	public void requestSortMbti(HttpServletRequest request) { //기본 mbti 추천 게시글 가져오기
+		BoardDao dao = BoardDao.getInstance();
+		
+		ArrayList<Board> mbtiboardlist = null;
+		
+		mbtiboardlist = dao.getSortBoard(request.getParameter("mbti"));
+		
+		request.setAttribute("mbtiboardlist", mbtiboardlist);
+		request.setAttribute("mbti", request.getParameter("mbti"));
 	}
 	
 	public boolean requestSendMail(HttpServletRequest request) {//메일 보내기
