@@ -17,6 +17,38 @@ public class memberDao {
 			instance = new memberDao();
 		return instance;
 	}
+	public int checkMemberById(String id) {
+		this.con = DBconfig.makeConnection();
+		PreparedStatement stmt = null;
+		String sql = "SELECT COUNT(*) FROM MEMBER WHERE ID = ?";
+		int count = 0;
+		
+		try {
+			stmt = con.prepareStatement(sql);
+			stmt.setString(1, id);
+			
+			rs = stmt.executeQuery();
+			if(rs.next())
+				count = rs.getInt(1);
+			return count;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {				
+				if (rs != null) 
+					rs.close();							
+				if (stmt != null) 
+					stmt.close();				
+				if (con != null) 
+					con.close();												
+			} catch (Exception ex) {
+				throw new RuntimeException(ex.getMessage());
+			}	
+		}
+		
+		return count;
+	}
 	
 	public Member getMemberInfo(String id) {
 		this.con = DBconfig.makeConnection();

@@ -7,6 +7,7 @@
 		String home = "/welcome.jsp";
 		String logout = "/logout.jsp";
 		String userinfo = null;
+		String userMail = null;
 		
 		if(session.getAttribute("sessionId") == null){
 			sessionId = null;
@@ -14,6 +15,7 @@
 			sessionId = (String) session.getAttribute("sessionId");
 			home = "/AllBoardListAction.userdo";
 			userinfo = "/requestUserInfo.userdo?name="+sessionId;
+			userMail = "/requestUserMail.userdo?name="+sessionId+"&option=0";
 		}	
 		//System.out.println((String)sessionId);
 	%>
@@ -32,6 +34,7 @@
 		%>
         	<a href =<%=route + logout %> class = "btn btn-secondary" role="button">로그아웃</a></li>
         	<a href =<%=route + userinfo %> class = "btn btn-secondary" role="button">내 정보</a></li>
+        	<a href =<%=route + userMail %> class = "btn btn-secondary" role="button">내 메일</a></li>
         <% 
 			}
         %>

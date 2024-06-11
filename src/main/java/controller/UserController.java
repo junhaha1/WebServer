@@ -6,9 +6,11 @@ import java.util.ArrayList;
 
 import database.BoardDao;
 import database.memberDao;
+import database.messageDao;
 import model.Board;
 import model.Coment;
 import model.Member;
+import model.Message;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -195,7 +197,124 @@ public class UserController extends HttpServlet {
 			RequestDispatcher rd = request.getRequestDispatcher("./userPage/researchBoard_user.jsp");
 			
 			rd.forward(request, response);
-		} 
+		} else if(command.equals("/requestUserMail.userdo")) { // 내 메일 불러오기
+			System.out.println("name: " + request.getParameter("name"));
+			System.out.println("option: " + request.getParameter("option"));
+			requestMailList(request);
+			
+			RequestDispatcher rd = request.getRequestDispatcher("./userPage/main_message.jsp");
+			
+			rd.forward(request, response);
+		} else if(command.equals("/userMailView.userdo")) { // 메일 상세보기 불러오기
+			System.out.println("MID: " + request.getParameter("MID"));
+			System.out.println("type: " + request.getParameter("type"));
+			System.out.println("name: " + request.getParameter("name"));
+			
+			requestMailView(request);
+			RequestDispatcher rd = request.getRequestDispatcher("./board/messageView.jsp");
+			rd.forward(request, response);
+		} else if(command.equals("/sendMail.userdo")) { // 메일 상세보기 불러오기
+			System.out.println("uid: " + request.getParameter("uid"));
+			System.out.println("rid: " + request.getParameter("rid"));
+			System.out.println("title: " + request.getParameter("title"));
+			
+			boolean check = requestSendMail(request);
+			RequestDispatcher rd = null;
+			
+			if(((String) request.getAttribute("error"))!= null && ((String) request.getAttribute("error")).equals("riderror")) { //아이디가 없을 경우
+				Message msg = new Message();
+				msg.setUID(request.getParameter("uid"));
+				msg.setRID(request.getParameter("rid"));
+				msg.setTITLE(request.getParameter("title"));
+				msg.setCONTENT(request.getParameter("content"));
+				
+				request.setAttribute("msg", msg);
+				
+				rd = request.getRequestDispatcher("./board/userMessageWriteForm.jsp");
+				rd.forward(request, response);
+			}else {
+				if(check)
+					rd = request.getRequestDispatcher("./userPage/msg_success.jsp");
+				else
+					rd = request.getRequestDispatcher("./userPage/msg_false.jsp");
+				rd.forward(request, response);
+			}
+		}
+	}
+	
+	public boolean requestSendMail(HttpServletRequest request) {//메일 보내기
+		messageDao dao = messageDao.getInstance();
+		memberDao mdao = memberDao.getInstance();
+		int result = mdao.checkMemberById(request.getParameter("rid"));
+		
+		if(result == 0) {
+			request.setAttribute("error", "riderror");
+			return false; //보내는 아이디가 없다. 
+		}
+		
+		Message msg = new Message();
+		msg.setUID(request.getParameter("uid"));
+		msg.setRID(request.getParameter("rid"));
+		msg.setTITLE(request.getParameter("title"));
+		msg.setCONTENT(request.getParameter("content"));
+		
+		boolean check = dao.insertMessage(msg);
+		
+		return check;
+	}
+	
+	public void requestMailView(HttpServletRequest request) { //메일 상세내용 불러오기
+		messageDao dao = messageDao.getInstance();
+		Message msg = null;
+		
+		int MID = Integer.parseInt(request.getParameter("MID"));
+		msg = dao.getMessage(MID);
+		request.setAttribute("msg", msg);
+	}
+	
+	public void requestMailList(HttpServletRequest request) { //메일 목록 불러오기
+		messageDao dao = messageDao.getInstance();
+		ArrayList<Message> maillist = new ArrayList<Message>();
+		
+		int pageNum=1;
+		int limit=LISTCOUNT;
+		int option = Integer.parseInt(request.getParameter("option"));
+		String name = request.getParameter("name");
+		
+		if(request.getParameter("pageNum")!=null)
+			pageNum=Integer.parseInt(request.getParameter("pageNum"));
+		
+		int total_record = 0;
+		
+		if(option == 0) //받은 메일
+			total_record = dao.getReciListCount(name); // 총 게시글 갯수
+		else if(option == 1)
+			total_record = dao.getSendListCount(name); // 총 게시글 갯수
+		
+		maillist = dao.selectMessage(pageNum, limit, name, option); // 해당 게시글들 정보
+		
+		int total_page; // 갯수
+		
+		if (total_record % limit == 0){     
+	     	total_page =total_record/limit;
+	     	Math.floor(total_page);  
+		}
+		else{
+		   total_page =total_record/limit;
+		   Math.floor(total_page); 
+		   total_page =  total_page + 1; 
+		}		
+   
+   		request.setAttribute("pageNum", pageNum);		  
+   		request.setAttribute("total_page", total_page);   
+		request.setAttribute("total_record",total_record); 
+		request.setAttribute("maillist", maillist);
+		
+		//request.setAttribute("type", type);
+		//request.setAttribute("items", code);
+		//request.setAttribute("text", name);
+		
+		System.out.println("mail check");
 	}
 	
 	public void requestSearchList(HttpServletRequest request) { //검색 목록 가져오기
@@ -235,7 +354,7 @@ public class UserController extends HttpServlet {
 		request.setAttribute("items", code);
 		request.setAttribute("text", name);
 		
-		System.out.println("check");
+		//System.out.println("check");
 	}
 	
    //새로운 글 등록하기
