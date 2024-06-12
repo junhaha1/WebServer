@@ -23,6 +23,7 @@
 	
 	session.removeAttribute("researchLog");
 	session.removeAttribute("checkMove");
+	
 %>
 <html>
 <head>

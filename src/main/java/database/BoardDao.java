@@ -440,6 +440,8 @@ public class BoardDao {
 			stmt.setString(12, board.getLatclick());
 			stmt.setString(13, board.getLngclick());
 			
+			System.out.println(stmt);
+			
 			stmt.executeUpdate();
 			
 		} catch (SQLException e) {

@@ -11,7 +11,9 @@
 		
 		if(session.getAttribute("sessionId") == null){
 			sessionId = null;
-		} else{ //로그인 상태일 경우
+		} else if(((String)session.getAttribute("sessionId")).equals("admin")){
+			sessionId = (String) session.getAttribute("sessionId");
+		}else{ //로그인 상태일 경우
 			sessionId = (String) session.getAttribute("sessionId");
 			home = "/AllBoardListAction.userdo";
 			userinfo = "/requestUserInfo.userdo?name="+sessionId;
@@ -33,8 +35,10 @@
 			if(sessionId != null){
 		%>
         	<a href =<%=route + logout %> class = "btn btn-secondary" role="button">로그아웃</a></li>
+        	<%if(!sessionId.equals("admin")) {%>
         	<a href =<%=route + userinfo %> class = "btn btn-secondary" role="button">내 정보</a></li>
         	<a href =<%=route + userMail %> class = "btn btn-secondary" role="button">내 메일</a></li>
+        	<%} %>
         <% 
 			}
         %>

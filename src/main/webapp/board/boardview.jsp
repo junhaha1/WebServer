@@ -178,6 +178,7 @@
 		</form>
 		<div class="mb-3 row">
 			<div class="col-sm-offset-2 col-sm-10 ">
+			<%if(!type.equals("notice")) {%>
 				좋아요 수 <%=board.getGoohit() %>
 				<%if(checkgood == 0) {%>
 				<form name = "goodHit" action="<%=route %>/requestUpdateGoodhit.userdo" method="post">
@@ -194,6 +195,7 @@
 					<input type="submit" class="btn btn-primary " value="좋아요 취소">	
 				</form>
 				<%} %>
+			<%} %>
 			</div>
 		</div>
 		<%if(!name.equals("admin")) {%>

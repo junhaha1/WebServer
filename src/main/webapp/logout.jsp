@@ -8,6 +8,7 @@
 	memberDao dao = memberDao.getInstance();
 	if(session.getAttribute("sessionId") != null){
 		if(dao.logoutUser((String)session.getAttribute("sessionId")) > 0){ // 로그아웃 성공
+			dao.lasttimeUpdate((String)session.getAttribute("sessionId"));
 			session.invalidate();
 			response.sendRedirect("welcome.jsp");
 		} else { //로그아웃 실패

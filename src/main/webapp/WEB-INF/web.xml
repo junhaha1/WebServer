@@ -48,4 +48,37 @@
 		<servlet-name>UserController</servlet-name>
 		<url-pattern>*.userdo</url-pattern>
 	</servlet-mapping>
+	
+	<error-page>
+		<error-code>404</error-code>
+		<location>/exceptionNoPage.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/exceptionVisitError.jsp</location>
+	</error-page>
+	<filter>
+		<filter-name>LogAdminFileFilter</filter-name>
+		<filter-class>filter.LogAdminFileFilter</filter-class>
+		<init-param>
+			<param-name>filename</param-name>
+			<param-value>c:\\logs\\adminLog.log</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>LogAdminFileFilter</filter-name>
+		<url-pattern>*.do</url-pattern>
+	</filter-mapping>
+	<filter>
+		<filter-name>LogUserFileFilter</filter-name>
+		<filter-class>filter.LogUserFileFilter</filter-class>
+		<init-param>
+			<param-name>filename</param-name>
+			<param-value>c:\\logs\\userLog.log</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>LogUserFileFilter</filter-name>
+		<url-pattern>*.userdo</url-pattern>
+	</filter-mapping>
 </web-app>

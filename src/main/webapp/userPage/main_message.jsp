@@ -14,7 +14,9 @@
 	int pageNum = ((Integer)request.getAttribute("pageNum")).intValue(); //현재 페이지 번호
 	int total_page = ((Integer)request.getAttribute("total_page")).intValue(); //총 페이지 나눈거 
 	
-	//session.removeAttribute("researchLogList");
+	int option = 0;
+	if(request.getAttribute("option")!=null)
+		option = ((Integer)request.getAttribute("option")).intValue();
 %>
 <html>
 <head>
@@ -83,7 +85,7 @@
 			<%
 				for(int i = 1; i <= total_page; i++){
 			%>
-				<a href="./requestUserMail.userdo?pageNum=<%=i %>&&type=msg" />
+				<a href="./requestUserMail.userdo?pageNum=<%=i %>&type=msg&name=<%=name %>&option=<%=option %>" />
 			<%		if(pageNum == i){ %>
 						<font color='4C5317'><b> [<%=i %>]</b></font></a>
 			<%

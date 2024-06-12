@@ -70,7 +70,6 @@ padding: 0px;
 	function btnClick() {
 
 	  const mydiv = document.getElementById('wrapper');
-
 	  
 	  if(mydiv.style.display === 'none') {
 
@@ -79,7 +78,6 @@ padding: 0px;
 	  }else {
 	    mydiv.style.display = 'none';
 	  }
-
 	}
 	function checkForm() {
 		if (!document.newWrite.name.value) {
@@ -261,9 +259,13 @@ padding: 0px;
 			            	document.getElementById('pname').value = pname;            	
 			                if (praddress) {
 			                	document.getElementById('paddress').value = praddress;
+			                	document.getElementById('paddress_v').value = praddress;
 			                } else {
 			                	document.getElementById('paddress').value = paddress; 
+			                	document.getElementById('paddress_v').value = praddress;
 			                }
+			            	document.getElementById('latclick_v').value = plat;
+			            	document.getElementById('lngclick_v').value = plng;
 			            	document.getElementById('latclick').value = plat;
 			            	document.getElementById('lngclick').value = plng;
 			            };
@@ -361,9 +363,12 @@ padding: 0px;
 				    <!-- 위도 및 경도 좌표 및 위치정보 -->
 				    주소 확인<input type="text" id="fulladdress" name="fulladdress" style="width:90%;" disabled> 
 				    <input type="text" id="pname" name="pname" value="">   
-				    <input type="text" id="paddress" name="paddress" value="" disabled>  
-				    <input type="text" id="latclick" name="latclick" value="" disabled> 
-				    <input type="text" id="lngclick" name="lngclick" value="" disabled> 
+				    <input type="text" id="paddress_v" name="paddress_v" value="" disabled>  
+				    <input type="text" id="latclick_v" name="latclick_v" value="" disabled> 
+				    <input type="text" id="lngclick_v" name="lngclick_v" value="" disabled> 
+				    <input type="hidden" id="paddress" name="paddress" value="" >  
+				    <input type="hidden" id="latclick" name="latclick" value="" > 
+				    <input type="hidden" id="lngclick" name="lngclick" value="" > 
 				    </div>
 			</div>
 			<div class="mb-3 row">
