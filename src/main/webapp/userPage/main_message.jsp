@@ -99,16 +99,6 @@
 				}
 			%>					
 			</div>
-			<div align="left">				
-				<select name="items" class="txt">
-					<option value="1">제목에서</option>
-					<option value="2">본문에서</option>
-					<option value="0">글쓴이에서</option>
-					<option value="3">mbti에서</option>
-				</select> <input name="text" type="text" /> 
-				<input type="hidden" name="type" value = "user"/> 
-				<input type="submit" id="btnAdd" class="btn btn-primary " value="검색 " />				
-			</div>
 		</form>			
 	</div>
 		<%@ include file = "../footer.jsp" %>

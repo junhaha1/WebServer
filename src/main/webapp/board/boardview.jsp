@@ -20,6 +20,8 @@
 	String BID = (String) request.getAttribute("BID");
 	int checkgood = ((Integer)request.getAttribute("checkgood")).intValue(); //사용자가 좋아요를 누른 상태인지 아닌지 확인
 	
+	System.out.println("상세보기에서의 좋아요 여부: " + checkgood);
+	
 	
 	String paddress = "none";
 	String pname = "none";

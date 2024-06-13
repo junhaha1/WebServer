@@ -81,6 +81,7 @@ public class BoardDao {
 		PreparedStatement stmt = null;
 		
 		ArrayList<Board> list = new ArrayList<Board>();
+		Board board = null;
 		
 		try {
 			stmt = con.prepareStatement(sql);
@@ -90,7 +91,10 @@ public class BoardDao {
 				BIDs.add(rs.getInt("BID"));
 			}
 			
-			list = getSortBoardList(BIDs);
+			for(int i = 0; i < BIDs.size(); i++) {
+				board = getSortBoard(BIDs.get(i));
+				list.add(board);
+			}
 			
 			return list;
 			
@@ -127,6 +131,7 @@ public class BoardDao {
 		PreparedStatement stmt = null;
 		
 		ArrayList<Board> list = new ArrayList<Board>();
+		Board board = null;
 		
 		try {
 			stmt = con.prepareStatement(sql);
@@ -136,8 +141,11 @@ public class BoardDao {
 				BIDs.add(rs.getInt("BID"));
 			}
 			
-			list = getSortBoardList(BIDs);
-			
+			for(int i = 0; i < BIDs.size(); i++) {
+				board = getSortBoard(BIDs.get(i));
+				list.add(board);
+			}
+
 			return list;
 			
 		} catch (SQLException e) {
@@ -157,20 +165,11 @@ public class BoardDao {
 		return null;
 	}
 	
-	private ArrayList<Board> getSortBoardList(ArrayList<Integer> BIDs){
+	private Board getSortBoard(int BID){
 		this.con = DBconfig.makeConnection();
-		String sql = "SELECT * FROM BOARD WHERE BID";
-		String instart = " IN (";
-		String inend = ")";
+		String sql = "SELECT * FROM BOARD WHERE BID = ?";
 		
-		for(int i = 0; i < BIDs.size(); i++) {
-			instart += BIDs.get(i);
-			if(i + 1 < BIDs.size())
-				instart += ",";
-			System.out.println(BIDs.get(i));
-		}
-		
-		sql = sql + instart + inend;
+		System.out.println(BID);
 		
 		PreparedStatement stmt = null;
 		
@@ -178,11 +177,12 @@ public class BoardDao {
 	
 		try {
 			stmt = con.prepareStatement(sql);
-			
+			stmt.setInt(1, BID);
 			rs = stmt.executeQuery();
 			
-			while(rs.next()) {
-				Board board = new Board();
+			Board board = null;
+			if(rs.next()) {
+				board = new Board();
 				board.setBID(rs.getInt("BID"));
 				board.setId(rs.getString("id"));
 				board.setMbti(rs.getString("mbti"));
@@ -197,10 +197,9 @@ public class BoardDao {
 				board.setPaddress(rs.getString("paddress"));
 				board.setLatclick(rs.getString("latclick"));
 				board.setLngclick(rs.getString("lngclick"));
-				list.add(board);
 			}
 			
-			return list;
+			return board;
 			
 		} catch (SQLException e) {
 			e.printStackTrace();

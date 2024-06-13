@@ -68,7 +68,7 @@
 					%>
 					<tr>
 						<td><%=board.getBID()%></td>
-						<td><a href="./userBoardView.userdo?BID=<%=board.getBID()%>&&type=common&&name="<%=name %>><%=board.getTitle()%></td>
+						<td><a href="./userBoardView.userdo?BID=<%=board.getBID()%>&&type=common&&name=<%=name %>"><%=board.getTitle()%></td>
 						<td><%=date %></td>
 						<td><%=board.getGoohit()%></td>
 						<td><%=board.getHit()%></td>
