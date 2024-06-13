@@ -28,7 +28,7 @@
 	Double lat = 33.450701;
 	Double lng = 126.570667;
 	
-	if(!board.getPname().isEmpty() && board.getLatclick() != null && board.getLngclick() != null){
+	if(!request.getParameter("type").equals("notice") && !board.getPname().isEmpty() && board.getLatclick() != null && board.getLngclick() != null){
 		paddress = board.getPaddress();
 		pname = board.getPname();
 		lat = Double.parseDouble(board.getLatclick());
@@ -138,7 +138,7 @@
 				</tbody>
 			</table>
 			<!-- 지도 표시하기 -->
-					<%if(!board.getPname().isEmpty()) {%>
+					<%if(!request.getParameter("type").equals("notice") && !board.getPname().isEmpty()) {%>
 					<div style="min-height: 400px">
 					<div id="map" style="width:60%;height:40%;"></div>
 					</div>

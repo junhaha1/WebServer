@@ -1,0 +1,11 @@
+update boardstate set icount = 93, ecount=117, ncount=102, scount=54, tcount=58, fcount= 95, jcount=101,pcount=136 where bid = 160;
+update boardstate set icount = 74, ecount=72, ncount=149, scount=67, tcount=117, fcount= 147, jcount=65,pcount=111 where bid = 161;
+update boardstate set icount = 83, ecount=58, ncount=120, scount=69, tcount=112, fcount= 124, jcount=101,pcount=147 where bid = 162;
+update boardstate set icount = 75, ecount=146, ncount=143, scount=84, tcount=121, fcount= 82, jcount=94,pcount=131 where bid = 163;
+update boardstate set icount = 75, ecount=185, ncount=114, scount=130, tcount=131, fcount= 113, jcount=96,pcount=187 where bid = 164;
+update boardstate set icount = 72, ecount=58, ncount=65, scount=103, tcount=120, fcount= 50, jcount=101,pcount=53 where bid = 165;
+update boardstate set icount = 63, ecount=32, ncount=120, scount=75, tcount=142, fcount= 129, jcount=79,pcount=141 where bid = 166;
+update boardstate set icount = 120, ecount=143, ncount=71, scount=98, tcount=50, fcount= 72, jcount=125,pcount=137 where bid = 167;
+update boardstate set icount = 95, ecount=122, ncount=132, scount=41, tcount=55, fcount= 38, jcount=49,pcount=137 where bid = 168;
+update boardstate set icount = 68, ecount=82, ncount=99, scount=38, tcount=78, fcount= 115, jcount=127,pcount=111 where bid = 169;
+update boardstate set icount = 30, ecount=62, ncount=125, scount=137, tcount=51, fcount= 46, jcount=67,pcount=75 where bid = 170;
