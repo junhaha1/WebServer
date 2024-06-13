@@ -185,7 +185,7 @@ public class UserController extends HttpServlet {
 			
 			RequestDispatcher rd = request.getRequestDispatcher("/userBoardView.userdo?BID="+BID+"&&name="+ID + "&&type="+type);
 			rd.forward(request, response);
-		} else if(command.equals("/requestDeleteGoodhit.userdo")) { //좋아요 눌렀을 때 처리
+		} else if(command.equals("/requestDeleteGoodhit.userdo")) { //좋아요 취소 눌렀을 때 처리
 			String BID = request.getParameter("BID");
 			String ID = request.getParameter("ID");
 			String type = request.getParameter("type");
@@ -245,7 +245,7 @@ public class UserController extends HttpServlet {
 				rd.forward(request, response);
 			}
 		} else if(command.equals("/sortMbtiBoard.userdo")) { //추천 게시글
-			System.out.println("mbti: " + request.getParameter("mbti"));
+			System.out.println("User Id: " + request.getParameter("name"));
 			requestSortMbti(request);
 			
 			List mbtiboardlist = (List)request.getAttribute("mbtiboardlist");
@@ -281,14 +281,14 @@ public class UserController extends HttpServlet {
 			
 			RequestDispatcher rd = null;
 			
-			request.setAttribute("id", request.getParameter("name"));
+			request.setAttribute("id", request.getParameter("id"));
 			
 			if(code == 0) //실패했다면
 				rd = request.getRequestDispatcher("/requestUserInfo.userdo?code=0&name="+request.getParameter("name"));
 			else if(code == 2) //아이디 중복
 				rd = request.getRequestDispatcher("/requestUserInfo.userdo?code=2&name="+request.getParameter("name"));
 			else 
-				rd = request.getRequestDispatcher("./userPage/updateSuccess.jsp?id="+request.getParameter("id"));
+				rd = request.getRequestDispatcher("./userPage/updateSuccess.jsp");
 			rd.forward(request, response);
 			
 		}
@@ -335,13 +335,16 @@ public class UserController extends HttpServlet {
 	}
 	public void requestSortMbti(HttpServletRequest request) { //기본 mbti 추천 게시글 가져오기
 		BoardDao dao = BoardDao.getInstance();
+		memberDao mdao = memberDao.getInstance();
 		
 		ArrayList<Board> mbtiboardlist = null;
 		
-		mbtiboardlist = dao.getSortBoard(request.getParameter("mbti"));
+		Member member = mdao.getMemberInfo(request.getParameter("name"));
+		
+		mbtiboardlist = dao.getSortBoard(member.getMbti());
 		
 		request.setAttribute("mbtiboardlist", mbtiboardlist);
-		request.setAttribute("mbti", request.getParameter("mbti"));
+		request.setAttribute("mbti", member.getMbti());
 	}
 	
 	public boolean requestSendMail(HttpServletRequest request) {//메일 보내기
@@ -496,7 +499,7 @@ public class UserController extends HttpServlet {
 		board.setHit(0);
 		board.setPname(multi.getParameter("pname"));
 		
-		System.out.println("paddress: " + multi.getParameter("paddress") + " latclick: " + multi.getParameter("latclick") + " lngclick: " + multi.getParameter("lngclick"));
+		//System.out.println("paddress: " + multi.getParameter("paddress") + " latclick: " + multi.getParameter("latclick") + " lngclick: " + multi.getParameter("lngclick"));
 		board.setPaddress(multi.getParameter("paddress"));
 		board.setLatclick(multi.getParameter("latclick"));
 		board.setLngclick(multi.getParameter("lngclick"));

@@ -167,7 +167,7 @@ public class BoardDao {
 			instart += BIDs.get(i);
 			if(i + 1 < BIDs.size())
 				instart += ",";
-			System.out.println( BIDs.get(i));
+			System.out.println(BIDs.get(i));
 		}
 		
 		sql = sql + instart + inend;
@@ -352,7 +352,7 @@ public class BoardDao {
 		
 		boolean check = false;
 		
-		//updateHit(num); 조회수 늘리기
+
 		String sql = "UPDATE BOARDSTATE SET " + 
 					count[0] + "=" + count[0] + " + 1," +
 					count[1] + "=" + count[1] + " + 1," +

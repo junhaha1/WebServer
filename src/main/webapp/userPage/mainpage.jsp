@@ -38,7 +38,7 @@
 		String noticeShow = "./NoticeBoardListAciton.userdo?type=notice";
 		String comentShow = "./comentBoardListAction.userdo?type=coment&&name="+name;
 		String mynoteShow = "./MyBoardListAction.userdo?name="+name;
-		String mbtiShow = "./sortMbtiBoard.userdo?mbti=infj"; // 테스트 코드
+		String mbtiShow = "./sortMbtiBoard.userdo?name="+name; // 테스트 코드
 		// String testShow = request.getContextPath() + "/userPage/test.jsp"; //테스트 코드
 		
 		

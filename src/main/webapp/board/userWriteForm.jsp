@@ -132,7 +132,7 @@ padding: 0px;
 					<textarea name="content" cols="50" rows="5" class="form-control"placeholder="content"></textarea>
 				</div>
 			</div>
-			<button onclick='btnClick()'>지도 유무</button>
+			<button type="button" onclick='btnClick()'>지도 유무</button>
 			<div id="wrapper">
 				<div class="map_wrap">
 				    <div id="map" style="width:80%;height:80%;position:relative;overflow:hidden;"></div>
